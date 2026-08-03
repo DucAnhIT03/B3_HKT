@@ -2,6 +2,7 @@ from .agent import KnowledgeBaseAgent
 from .chunking import (
     ChunkingStrategyComparator,
     FixedSizeChunker,
+    HierarchicalSectionChunker,
     HeadingSectionChunker,
     HeadingWindowChunker,
     RecursiveChunker,
@@ -18,6 +19,7 @@ from .embeddings import (
     _mock_embed,
 )
 from .models import Document
+from .reranking import SentenceRerankingStore
 from .store import EmbeddingStore
 
 __all__ = [
@@ -25,11 +27,13 @@ __all__ = [
     "FixedSizeChunker",
     "SentenceChunker",
     "RecursiveChunker",
+    "HierarchicalSectionChunker",
     "HeadingSectionChunker",
     "HeadingWindowChunker",
     "ChunkingStrategyComparator",
     "compute_similarity",
     "EmbeddingStore",
+    "SentenceRerankingStore",
     "KnowledgeBaseAgent",
     "MockEmbedder",
     "LocalEmbedder",

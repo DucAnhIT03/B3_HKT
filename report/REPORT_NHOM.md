@@ -37,15 +37,15 @@ RMIT, có raw top-3 và agent answer tại
 
 | # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
 |---|--------------|------------|--------------------|----------|-----------------|
-| 1 | Resources for students with a disability | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/resources-for-students-with-a-disability) | 2026-08-03 / not-stated | 949 | student, library, accessibility, en |
-| 2 | Borrowing and returning | [RMIT](https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning) | 2026-08-03 / not-stated | 3,553 | all, library, borrowing-policy, en |
-| 3 | Develop course content | [RMIT](https://www.rmit.edu.vn/libraryvn/teacher-support/developing-course-content) | 2026-08-03 / not-stated | 975 | faculty, library, teacher-support, en |
-| 4 | Library hours and locations | [RMIT](https://www.rmit.edu.vn/libraryvn/about-us/hours-and-locations) | 2026-08-03 / not-stated | 1,776 | all, library, opening-hours, en |
-| 5 | Library resources and collections | [RMIT](https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources) | 2026-08-03 / not-stated | 3,816 | all, library, library-resources, en |
-| 6 | RMIT Vietnam Library rules | [RMIT](https://www.rmit.edu.vn/libraryvn/about-us) | 2026-08-03 / not-stated | 778 | all, library, library-rules, en |
-| 7 | Study FAQs | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/study-faq) | 2026-08-03 / not-stated | 24,139 | student, library, student-support, en |
-| 8 | Book a study room | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room) | 2026-08-03 / not-stated | 1,354 | student, library, room-booking, en |
-| 9 | Workshops and consultations for students | [RMIT](https://www.rmit.edu.vn/libraryvn/teacher-support/organise-workshops-and-consultations-for-your-students) | 2026-08-03 / not-stated | 1,135 | faculty, library, teacher-support, en |
+| 1 | Resources for students with a disability | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/resources-for-students-with-a-disability) | 2026-08-03 / not-stated | 959 | student, library, accessibility, en |
+| 2 | Borrowing and returning | [RMIT](https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning) | 2026-08-03 / not-stated | 3,678 | all, library, borrowing-policy, en |
+| 3 | Develop course content | [RMIT](https://www.rmit.edu.vn/libraryvn/teacher-support/developing-course-content) | 2026-08-03 / not-stated | 984 | faculty, library, teacher-support, en |
+| 4 | Library hours and locations | [RMIT](https://www.rmit.edu.vn/libraryvn/about-us/hours-and-locations) | 2026-08-03 / not-stated | 1,788 | all, library, opening-hours, en |
+| 5 | Library resources and collections | [RMIT](https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources) | 2026-08-03 / not-stated | 3,608 | all, library, library-resources, en |
+| 6 | RMIT Vietnam Library rules | [RMIT](https://www.rmit.edu.vn/libraryvn/about-us) | 2026-08-03 / not-stated | 469 | all, library, library-rules, en |
+| 7 | Study FAQs | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/study-faq) | 2026-08-03 / not-stated | 25,640 | student, library, student-support, en |
+| 8 | Book a study room | [RMIT](https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room) | 2026-08-03 / not-stated | 1,326 | student, library, room-booking, en |
+| 9 | Workshops and consultations for students | [RMIT](https://www.rmit.edu.vn/libraryvn/teacher-support/organise-workshops-and-consultations-for-your-students) | 2026-08-03 / not-stated | 1,141 | faculty, library, teacher-support, en |
 
 > Số ký tự được tính trên phần nội dung sau YAML front matter, đúng với dữ liệu
 > được `ingest.py` đưa vào chunker.
@@ -87,15 +87,15 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 | Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
 |-----------|----------|-------------|------------|-------------------|
-| `rmit-borrowing-returning` | FixedSizeChunker (`fixed_size`) | 10 | 391.3 | Không ổn định: có thể cắt giữa câu/mục. |
-| `rmit-borrowing-returning` | SentenceChunker (`by_sentences`) | 8 | 441.4 | Giữ câu nhưng có chunk vượt mục tiêu 400 ký tự. |
-| `rmit-borrowing-returning` | RecursiveChunker (`recursive`) | 10 | 353.5 | Khá tốt: ưu tiên đoạn, dòng, câu rồi từ. |
-| `rmit-study-room-booking` | FixedSizeChunker (`fixed_size`) | 4 | 368.5 | Có overlap nhưng vẫn có thể mất ranh giới heading. |
-| `rmit-study-room-booking` | SentenceChunker (`by_sentences`) | 2 | 675.0 | Giữ câu, nhưng list dài làm chunk quá lớn. |
-| `rmit-study-room-booking` | RecursiveChunker (`recursive`) | 4 | 337.0 | Giữ phần lớn các cụm quy định liền nhau. |
-| `rmit-study-faq` | FixedSizeChunker (`fixed_size`) | 67 | 399.7 | Cắt đều nhưng dễ trộn hai câu hỏi FAQ. |
-| `rmit-study-faq` | SentenceChunker (`by_sentences`) | 90 | 265.1 | Mạch lạc theo câu nhưng mất liên kết với câu hỏi/heading. |
-| `rmit-study-faq` | RecursiveChunker (`recursive`) | 74 | 324.2 | Tốt hơn fixed, nhưng mảnh sau của section dài có thể mất tiêu đề. |
+| `rmit-borrowing-returning` | FixedSizeChunker (`fixed_size`) | 11 | 379.8 | Không ổn định: có thể cắt giữa câu/mục. |
+| `rmit-borrowing-returning` | SentenceChunker (`by_sentences`) | 9 | 406.0 | Giữ câu nhưng có chunk vượt mục tiêu 400 ký tự. |
+| `rmit-borrowing-returning` | RecursiveChunker (`recursive`) | 11 | 332.5 | Khá tốt: ưu tiên đoạn, dòng, câu rồi từ. |
+| `rmit-study-room-booking` | FixedSizeChunker (`fixed_size`) | 4 | 369.0 | Có overlap nhưng vẫn có thể mất ranh giới heading. |
+| `rmit-study-room-booking` | SentenceChunker (`by_sentences`) | 2 | 661.0 | Giữ câu, nhưng list dài làm chunk quá lớn. |
+| `rmit-study-room-booking` | RecursiveChunker (`recursive`) | 4 | 330.0 | Giữ phần lớn các cụm quy định liền nhau. |
+| `rmit-study-faq` | FixedSizeChunker (`fixed_size`) | 74 | 395.8 | Cắt đều nhưng dễ trộn hai câu hỏi FAQ. |
+| `rmit-study-faq` | SentenceChunker (`by_sentences`) | 91 | 278.6 | Mạch lạc theo câu nhưng mất liên kết với câu hỏi/heading. |
+| `rmit-study-faq` | RecursiveChunker (`recursive`) | 76 | 335.4 | Tốt hơn fixed, nhưng mảnh sau của section dài có thể mất tiêu đề. |
 
 Các số liệu trên được tính từ phần body sau khi `ingest.load_documents()` loại
 YAML front matter, với `chunk_size=400`.
@@ -247,14 +247,13 @@ chunker = FixedSizeChunker(
 | Nguyễn Đức Anh | **HierarchicalSection 1600 + sentence rerank** | **10/10 strict rubric** | 119 chunk; 5/5 evidence top-1 và agent đúng; Q1 không lẫn audience; Q5 đủ 10 lý do trong một chunk. | Phức tạp hơn baseline; ablation không rerank chỉ đạt 9/10 vì Q4 ở rank 3. |
 | Phan Văn Hiếu | **Recursive 300** | **10/10 evidence-rank trong output cá nhân; 9/10 khi tái chấm strict agent** | 166 chunk trong output cá nhân; evidence xuất hiện top-3 ở 5/5 query. | Q1 trộn quota English và undergraduate; Q5 chia danh sách ngoại lệ qua hai chunk nên top-1 agent thiếu ý. |
 | Nguyễn Huy Tòa | Custom HeadingAware 400 + Recursive | **8/10 evidence-rank** | 188 chunk; giữ heading/section; Q1, Q2, Q4 có full evidence top-1. | Q3 gold chunk ở top-3; Q5 chỉ có partial evidence ở top-2; một số chunk chỉ có heading. |
-| Tạ Long Khánh | Recursive 400 | **5/5 query có evidence top-3; thành viên đề xuất 10/10** (*) | Giữ ngữ cảnh tốt; đa số query có chunk đúng top-1. | Accessibility đúng ở top-2, FAQ có nội dung ngữ nghĩa gần nên xếp trước. |
-| Vũ Đăng Huy | FixedSize 500, overlap 100 | **5/5 query có evidence top-3; thành viên đề xuất 10/10** (*) | Kích thước ổn định; overlap giữ ngữ cảnh; 4/5 query đúng top-1. | Có thể cắt giữa câu/ý; Accessibility bị FAQ xếp trước. |
+| Tạ Long Khánh | Recursive 400 | **7/10 strict reproduction** | 118 chunk; Q1/Q2 full evidence top-1; ranh giới tự nhiên tốt hơn fixed. | Evidence rank `[1,1,3,3,2]`; Q3/Q4/Q5 không ở top-1. |
+| Vũ Đăng Huy | FixedSize 500, overlap 100 | **8/10 strict reproduction** | 101 chunk; overlap giữ biên; Q1/Q2/Q5 full evidence top-1. | Evidence rank `[1,1,2,3,1]`; có thể cắt giữa câu/ý; Q3/Q4 chưa top-1. |
 
 > Bảng trên dùng cùng corpus, 5 query, local multilingual embedder và top-k=3.
-> Bốn dòng baseline là cấu hình tham chiếu, không phải thành viên. Dấu `(*)` cho
-> biết điểm do thành viên tự báo cáo theo tiêu chí 5/5 query có chunk đúng trong
-> top-3. Với hai cấu hình dẫn đầu, nhóm chấm thêm điều kiện strict: một chunk
-> rank-1 phải đủ evidence và agent answer phải chứa đủ ý.
+> Bốn dòng baseline là cấu hình tham chiếu, không phải thành viên. Nhóm giữ nguyên
+> raw cá nhân đã nhận, đồng thời tái chạy Recursive 300/400 và Fixed 500/100 bằng
+> strict rubric: một chunk rank-1 phải đủ evidence và agent answer phải chứa đủ ý.
 
 **Trong các cấu hình đã có raw evidence-rank, chiến lược nào tốt nhất? Tại sao?**
 > Nhóm chọn **HierarchicalSection 1600 + sentence rerank của Nguyễn Đức Anh**.
@@ -268,6 +267,7 @@ chunker = FixedSizeChunker(
 
 ```bash
 python scripts/fetch_rmit_corpus.py
+python scripts/validate_corpus.py --data-dir data/rmit-library
 python scripts/run_rmit_benchmark.py --provider local
 ```
 
@@ -300,8 +300,8 @@ trước khi chạy benchmark; câu 4 bắt buộc dùng `metadata_filter={"audi
 | Nguyễn Đức Anh | **119** | Evidence rank `1, 1, 1, 1, 1`; agent đúng 5/5; mỗi top-1 chứa đủ marker, kể cả 10/10 lý do ở Q5. | **10/10 strict retrieval — được chọn** |
 | Phan Văn Hiếu | 166 | Evidence-rank output cá nhân `1, 1, 1, 1, 1`; kiểm tra strict ghi nhận Q1 có thông tin cạnh tranh và top-1 Q5 thiếu phần danh sách ở rank 2. | 10/10 evidence-rank; **9/10 strict reproduction** |
 | Nguyễn Huy Tòa | 188 | Q1, Q2, Q4 full evidence top-1; Q3 gold chunk top-3; Q5 partial evidence top-2. | 8/10 evidence-rank |
-| Tạ Long Khánh | Chưa cung cấp | 5/5 query có chunk liên quan top-3; Accessibility ở top-2. | Thành viên đề xuất 10/10; chờ chuẩn hóa rubric |
-| Vũ Đăng Huy | Chưa cung cấp | 5/5 query có chunk liên quan top-3; 4/5 top-1; Accessibility bị chunk FAQ xếp trước. | Thành viên đề xuất 10/10; chờ chuẩn hóa rubric |
+| Tạ Long Khánh | **118** | Strict evidence rank `1, 1, 3, 3, 2`; agent đúng Q1/Q2. | **7/10 strict reproduction** |
+| Vũ Đăng Huy | **101** | Strict evidence rank `1, 1, 2, 3, 1`; agent đúng Q1/Q2/Q5. | **8/10 strict reproduction** |
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
@@ -321,6 +321,19 @@ trước khi chạy benchmark; câu 4 bắt buộc dùng `metadata_filter={"audi
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
+
+### Kịch bản demo 3–5 phút
+
+1. Chạy `python -m streamlit run streamlit_app.py`; mở **Kho dữ liệu** để xác
+   nhận 9 tài liệu, metadata và link nguồn RMIT.
+2. Mở **Benchmark**: so sánh trực quan Recursive 300 (9/10 strict),
+   Hierarchical không rerank (9/10) và Nguyễn Đức Anh được chọn (10/10).
+3. Chạy Q1 để chỉ ra top-1 không còn quota English = 10; chạy Q5 để cho thấy một
+   chunk giữ đủ 10 lý do.
+4. Chạy Q4 hai lần không filter/có `audience=student`, chỉ ra kết quả đổi từ 0/2
+   sang 2/2; mở `source_url` từ chunk rank-1 để chứng minh grounding.
+5. Kết thúc bằng failure/ablation Q4: base rank 3 → rerank rank 1, nêu trade-off
+   thêm lượt embedding theo câu nhưng giảm nhiễu cùng chủ đề.
 
 ### Nhận xét của từng thành viên
 
@@ -343,21 +356,17 @@ chunk kế cận khi câu trả lời là danh sách dài.
 
 #### Tạ Long Khánh — Recursive 400
 
-Kết quả thành viên cung cấp cho thấy cả 5 câu hỏi đều truy xuất được chunk liên
-quan trong top-3 và đa số ở top-1. Failure đáng chú ý là Accessibility: dù filter
-`audience=student` hoạt động đúng, chunk đáp án vẫn ở top-2 vì tài liệu FAQ có
-nhiều từ/ngữ nghĩa gần với query. Hướng cải thiện là bổ sung filter `category`
-hoặc `department`, đồng thời thử heading kết hợp Recursive để phân biệt tốt hơn
-các tài liệu cùng chủ đề.
+Kết quả strict reproduction tạo 118 chunk, đạt 7/10 với evidence rank
+`[1,1,3,3,2]`. Q1/Q2 ở top-1; Q3/Q4/Q5 vẫn có evidence trong top-3 nhưng agent
+top-1 chưa đủ ý. Accessibility khó vì FAQ có ngữ nghĩa gần. Hướng cải thiện là
+heading-aware, rerank theo câu hoặc metadata section/category.
 
 #### Vũ Đăng Huy — FixedSize 500, overlap 100
 
-FixedSize tạo chunk ổn định và overlap giúp giữ ngữ cảnh tại biên; theo kết quả
-thành viên cung cấp, 5/5 query có chunk liên quan trong top-3 và 4/5 ở top-1.
-Accessibility tiếp tục là trường hợp khó vì FAQ có độ tương đồng ngữ nghĩa cao
-hơn chunk đáp án. Hướng cải thiện là tuning `chunk_size`/`overlap` và bổ sung
-metadata `category` hoặc `section`; nhược điểm cố hữu vẫn là khả năng cắt giữa
-câu hay giữa một ý.
+FixedSize tạo 101 chunk; overlap giúp giữ ngữ cảnh tại biên. Strict reproduction
+đạt 8/10 với evidence rank `[1,1,2,3,1]`: Q1/Q2/Q5 ở top-1, Q3 ở top-2 và Q4 ở
+top-3. Hướng cải thiện là tuning `chunk_size`/`overlap`, rerank và metadata
+`category/section`; nhược điểm cố hữu vẫn là khả năng cắt giữa câu hay giữa ý.
 
 #### Nguyễn Đức Anh
 
@@ -374,7 +383,8 @@ rank 1 sau metadata pre-filter. Kết quả cuối có 119 chunk, 5/5 rank-1, ag
 > - Evidence hit chưa đồng nghĩa đáp án sạch: Q1 top-1 của Recursive 300 có đủ
 >   25/30/1 nhưng cũng chứa quota 10 của English students.
 > - Metadata filter thay đổi kết quả rõ nhất ở Query 4; sau filter, evidence của
->   Nguyễn Đức Anh và Phan lên top-1, còn Tạ Long Khánh báo cáo ở top-2.
+>   Nguyễn Đức Anh và Phan lên top-1; strict reproduction của Tạ Long Khánh và
+>   Vũ Đăng Huy đặt evidence ở rank 3.
 > - Heading-aware giữ section tốt nhưng có thể tạo chunk chỉ có heading và chia
 >   đôi danh sách; FixedSize có overlap giữ biên nhưng vẫn có thể cắt giữa ý.
 > - Ablation của Nguyễn Đức Anh cho thấy cùng 119 chunk, chỉ thêm sentence rerank

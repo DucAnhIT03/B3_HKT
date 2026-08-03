@@ -29,6 +29,7 @@ from src.chunking import (  # noqa: E402
     _dot,
 )
 from src.embeddings import LOCAL_EMBEDDING_MODEL, LocalEmbedder, _mock_embed  # noqa: E402
+from src.reranking import SentenceRerankingStore  # noqa: E402
 from src.store import EmbeddingStore  # noqa: E402
 
 
@@ -91,52 +92,6 @@ class StaticResultStore:
 
     def search(self, _question: str, top_k: int = 3) -> list[dict]:
         return self.results[:top_k]
-
-
-class SentenceRerankingStore:
-    """Rerank chunks by their most answerable sentence.
-
-    Chunk cosine captures topic similarity; max-sentence cosine rewards a chunk
-    that contains one highly relevant factual sentence. The two signals are
-    averaged so provenance and section context still contribute to ranking.
-    """
-
-    def __init__(self, store: EmbeddingStore, embedding_fn: Callable[[str], list[float]]) -> None:
-        self.store = store
-        self.embedding_fn = embedding_fn
-
-    def get_collection_size(self) -> int:
-        return self.store.get_collection_size()
-
-    def search_with_filter(
-        self,
-        query: str,
-        top_k: int = 3,
-        metadata_filter: dict | None = None,
-    ) -> list[dict]:
-        candidates = self.store.search_with_filter(
-            query,
-            top_k=self.store.get_collection_size(),
-            metadata_filter=metadata_filter,
-        )
-        query_vector = self.embedding_fn(query)
-        reranked: list[dict] = []
-        for candidate in candidates:
-            sentences = [
-                sentence.strip()
-                for sentence in re.split(r"(?<=[.!?])\s+|\n+", candidate["content"])
-                if len(sentence.strip()) >= 20
-            ]
-            sentence_score = max(
-                (_dot(query_vector, self.embedding_fn(sentence)) for sentence in sentences),
-                default=float(candidate["score"]),
-            )
-            result = dict(candidate)
-            result["base_score"] = float(candidate["score"])
-            result["sentence_score"] = float(sentence_score)
-            result["score"] = (result["base_score"] + result["sentence_score"]) / 2
-            reranked.append(result)
-        return sorted(reranked, key=lambda item: item["score"], reverse=True)[:top_k]
 
 
 def make_cached_embedder(provider: str) -> tuple[Callable[[str], list[float]], str]:

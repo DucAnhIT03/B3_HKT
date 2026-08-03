@@ -160,6 +160,11 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 
 **Kết luận:** toàn bộ interface bắt buộc của `src/chunking.py`, `src/store.py` và `src/agent.py` đều vượt qua test; không còn test đỏ hay test bị skip.
 
+**Kiểm tra end-to-end:** `python main.py "What steps are required to book a
+Library study room?"` nạp 119 chunk bằng local multilingual embedder, trả đúng
+`rmit-study-room-booking` ở top-1 (score `0,816`) và agent trả đủ bốn bước với
+citation `[1]`.
+
 ---
 
 ## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)

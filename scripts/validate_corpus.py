@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import csv
 import sys
 from pathlib import Path
@@ -15,7 +16,7 @@ if str(ROOT) not in sys.path:
 from ingest import load_documents  # noqa: E402
 
 
-DATA_DIR = ROOT / "data" / "k3_university"
+DEFAULT_DATA_DIR = ROOT / "data" / "rmit-library"
 REQUIRED_METADATA = {
     "doc_id",
     "title",
@@ -29,9 +30,16 @@ REQUIRED_METADATA = {
 }
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--data-dir", type=Path, default=DEFAULT_DATA_DIR)
+    return parser.parse_args()
+
+
 def main() -> int:
-    documents = load_documents(DATA_DIR)
-    with (DATA_DIR / "sources.csv").open(encoding="utf-8", newline="") as source_file:
+    data_dir = parse_args().data_dir.resolve()
+    documents = load_documents(data_dir)
+    with (data_dir / "sources.csv").open(encoding="utf-8", newline="") as source_file:
         sources = list(csv.DictReader(source_file))
 
     assert 5 <= len(documents) <= 10, "corpus must contain 5-10 documents"

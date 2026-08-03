@@ -15,12 +15,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from ingest import chunk_document, load_documents  # noqa: E402
-from scripts.run_benchmark import (  # noqa: E402
-    SentenceRerankingStore,
-    evaluate_query,
-    make_cached_embedder,
+from scripts.run_benchmark import evaluate_query, make_cached_embedder  # noqa: E402
+from src.chunking import (  # noqa: E402
+    FixedSizeChunker,
+    HeadingSectionChunker,
+    HierarchicalSectionChunker,
+    RecursiveChunker,
 )
-from src.chunking import HierarchicalSectionChunker, RecursiveChunker  # noqa: E402
+from src.reranking import SentenceRerankingStore  # noqa: E402
 from src.store import EmbeddingStore  # noqa: E402
 
 
@@ -119,6 +121,21 @@ def run(provider: str, data_dir: Path) -> dict:
             "chunker": RecursiveChunker(chunk_size=300),
             "rerank": False,
             "owner": "Phan Văn Hiếu reference reproduced on the submitted corpus",
+        },
+        "nguyen_huy_toa_heading_400_reference": {
+            "chunker": HeadingSectionChunker(chunk_size=400),
+            "rerank": False,
+            "owner": "Nguyễn Huy Tòa reference reproduced on the submitted corpus",
+        },
+        "ta_long_khanh_recursive_400": {
+            "chunker": RecursiveChunker(chunk_size=400),
+            "rerank": False,
+            "owner": "Tạ Long Khánh — 2A202601197",
+        },
+        "vu_dang_huy_fixed_500_overlap_100": {
+            "chunker": FixedSizeChunker(chunk_size=500, overlap=100),
+            "rerank": False,
+            "owner": "Vũ Đăng Huy — 2A202601761",
         },
         "hierarchical_without_rerank": {
             "chunker": HierarchicalSectionChunker(chunk_size=1600),

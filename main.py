@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 
 from ingest import build_knowledge_base
 from src.agent import KnowledgeBaseAgent
+from src.chunking import HierarchicalSectionChunker
 from src.embeddings import (
     EMBEDDING_PROVIDER_ENV,
     LOCAL_EMBEDDING_MODEL,
@@ -16,16 +18,21 @@ from src.embeddings import (
     OpenAIEmbedder,
     _mock_embed,
 )
+from src.reranking import SentenceRerankingStore
 
-# Thư mục dữ liệu mặc định cho demo = bộ khởi động cố định của lớp K3.
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
+# Thư mục dữ liệu mặc định cho demo = corpus chính thức của nhóm B3_HKT.
 # Đổi bằng biến môi trường: LAB_DATA_DIR=data/<thu-muc-cua-nhom> python3 main.py
-DEFAULT_DATA_DIR = "data/k3_university"
+DEFAULT_DATA_DIR = "data/rmit-library"
 
 
 def _select_embedder():
     """Chọn backend nhúng theo biến môi trường EMBEDDING_PROVIDER (mock | local | openai)."""
     load_dotenv(override=False)
-    provider = os.getenv(EMBEDDING_PROVIDER_ENV, "mock").strip().lower()
+    provider = os.getenv(EMBEDDING_PROVIDER_ENV, "local").strip().lower()
     if provider == "local":
         try:
             return LocalEmbedder(model_name=os.getenv("LOCAL_EMBEDDING_MODEL", LOCAL_EMBEDDING_MODEL))
@@ -42,9 +49,19 @@ def _select_embedder():
 
 
 def demo_llm(prompt: str) -> str:
-    """LLM giả lập đơn giản để thử RAG thủ công."""
-    preview = prompt[:400].replace("\n", " ")
-    return f"[DEMO LLM] Generated answer from prompt preview: {preview}..."
+    """No-key extractive answerer: return complete rank-1 grounded evidence."""
+    context_match = re.search(r"Context:\n(.*?)\n\nQuestion:", prompt, re.S)
+    if not context_match:
+        return "Không đủ thông tin trong context."
+    first_block = re.split(
+        r"(?m)(?=^\[2\])",
+        context_match.group(1),
+        maxsplit=1,
+    )[0].strip()
+    if "\n" not in first_block:
+        return "Không đủ thông tin trong context."
+    content = first_block.split("\n", 1)[1].strip()
+    return f"[1] {content}" if content else "Không đủ thông tin trong context."
 
 
 def run_manual_demo(question: str | None = None, data_dir: str | None = None) -> int:
@@ -69,7 +86,12 @@ def run_manual_demo(question: str | None = None, data_dir: str | None = None) ->
         )
 
     # Pipeline cung cấp sẵn: parse front matter -> chunk -> gắn metadata -> nạp store.
-    store = build_knowledge_base(data_dir, embedding_fn=embedder)
+    base_store = build_knowledge_base(
+        data_dir,
+        embedding_fn=embedder,
+        chunker=HierarchicalSectionChunker(chunk_size=1600),
+    )
+    store = SentenceRerankingStore(base_store, embedder)
     print(f"Đã nạp {store.get_collection_size()} chunk vào EmbeddingStore")
 
     print("\n=== Tìm kiếm (EmbeddingStore.search) ===")

@@ -15,33 +15,41 @@ from ingest import build_knowledge_base, load_documents
 from src.agent import KnowledgeBaseAgent
 from src.chunking import (
     FixedSizeChunker,
+    HierarchicalSectionChunker,
     RecursiveChunker,
     SentenceChunker,
-    _dot,
 )
 from src.embeddings import LOCAL_EMBEDDING_MODEL, LocalEmbedder, _mock_embed
+from src.reranking import SentenceRerankingStore
 
 
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "data" / "k3_university"
+DATA_DIR = ROOT / "data" / "rmit-library"
 SOURCES_PATH = DATA_DIR / "sources.csv"
-BENCHMARK_PATH = ROOT / "report" / "benchmark_results.json"
+BENCHMARK_PATH = ROOT / "report" / "benchmark_rmit_nguyen_duc_anh.json"
 
 STRATEGY_LABELS = {
     "fixed_size": "Fixed-size",
     "by_sentences": "Theo câu",
     "recursive": "Recursive",
+    "hierarchical": "Nguyễn Đức Anh — Hierarchical + rerank",
+    "recursive_300_reference": "Recursive 300 — đối chứng",
+    "nguyen_huy_toa_heading_400_reference": "Nguyễn Huy Tòa — Heading 400",
+    "ta_long_khanh_recursive_400": "Tạ Long Khánh — Recursive 400",
+    "vu_dang_huy_fixed_500_overlap_100": "Vũ Đăng Huy — Fixed 500/100",
+    "hierarchical_without_rerank": "Hierarchical — ablation",
+    "nguyen_duc_anh_hierarchical_rerank": "Nguyễn Đức Anh — được chọn",
 }
 PROVIDER_LABELS = {
     "local": "Local multilingual",
     "mock": "Mock deterministic",
 }
 EXAMPLE_QUESTIONS = [
-    "Sinh viên năm nhất nhận được những hỗ trợ nào từ First-Year Librarians?",
-    "Tôi được mượn tối đa bao nhiêu sách trên Libby và trong bao lâu?",
-    "Tài liệu mượn thông thường được tự động gia hạn tối đa bao nhiêu lần?",
-    "Giảng viên đặt một buổi hướng dẫn thư viện cho lớp bằng cách nào?",
-    "BorrowDirect cho mượn tài liệu gì và có được gia hạn không?",
+    "How many items can undergraduate and postgraduate students borrow, for how long, and how many renewals are allowed?",
+    "Under what conditions can a borrowed item be renewed, and how long does the renewal last?",
+    "What steps are required to book a Library study room?",
+    "What support does the Library provide to make resources accessible?",
+    "Which reasons will the Library not accept when a user disputes a fine?",
 ]
 
 
@@ -68,8 +76,8 @@ def _default_settings() -> dict:
         default_provider = "local"
     return {
         "provider": default_provider,
-        "strategy": "recursive",
-        "chunk_size": 500,
+        "strategy": "hierarchical",
+        "chunk_size": 1600,
         "overlap": 50,
         "max_sentences": 3,
         "top_k": 3,
@@ -121,6 +129,8 @@ def _make_cached_embedder(provider: str) -> tuple[Callable[[str], list[float]], 
 
 
 def _make_chunker(settings: dict):
+    if settings["strategy"] == "hierarchical":
+        return HierarchicalSectionChunker(chunk_size=settings["chunk_size"])
     if settings["strategy"] == "by_sentences":
         return SentenceChunker(max_sentences_per_chunk=settings["max_sentences"])
     if settings["strategy"] == "recursive":
@@ -145,59 +155,37 @@ def build_resources(
         "max_sentences": max_sentences,
     }
     embedder, backend_name, warning = _make_cached_embedder(provider)
-    store = build_knowledge_base(
+    base_store = build_knowledge_base(
         DATA_DIR,
         embedding_fn=embedder,
         chunker=_make_chunker(settings),
         collection_name=f"ui_{strategy}_{chunk_size}_{overlap}_{max_sentences}",
     )
+    store = (
+        SentenceRerankingStore(base_store, embedder)
+        if strategy == "hierarchical"
+        else base_store
+    )
     return store, embedder, backend_name, warning
 
 
-def make_extractive_llm(embedding_fn: Callable[[str], list[float]]) -> Callable[[str], str]:
-    """Create a deterministic grounded answerer for the no-API-key demo."""
+def make_extractive_llm(_embedding_fn: Callable[[str], list[float]]) -> Callable[[str], str]:
+    """Return complete rank-1 evidence for a deterministic grounded demo."""
 
     def answer(prompt: str) -> str:
         context_match = re.search(r"Context:\n(.*?)\n\nQuestion:", prompt, re.S)
-        question_match = re.search(r"Question:\s*(.*?)\nAnswer:", prompt, re.S)
-        if not context_match or not question_match:
+        if not context_match:
             return "Không đủ thông tin trong ngữ cảnh được truy xuất."
 
-        question = question_match.group(1).strip()
-        candidates: list[tuple[str, str]] = []
-        blocks = re.split(r"(?m)(?=^\[\d+\])", context_match.group(1))
-        for block in blocks:
-            lines = block.strip().splitlines()
-            if len(lines) < 2 or not lines[0].startswith("["):
-                continue
-            citation = lines[0].split("]", 1)[0] + "]"
-            sentences = re.split(r"(?<=[.!?])\s+|\n+", "\n".join(lines[1:]))
-            candidates.extend(
-                (citation, sentence.strip())
-                for sentence in sentences
-                if len(sentence.strip()) >= 20
-            )
-
-        if not candidates:
+        first_block = re.split(
+            r"(?m)(?=^\[2\])",
+            context_match.group(1),
+            maxsplit=1,
+        )[0].strip()
+        if "\n" not in first_block:
             return "Không đủ thông tin trong ngữ cảnh được truy xuất."
-
-        query_vector = embedding_fn(question)
-        ranked = sorted(
-            candidates,
-            key=lambda item: _dot(query_vector, embedding_fn(item[1])),
-            reverse=True,
-        )
-        selected: list[str] = []
-        seen: set[str] = set()
-        for citation, sentence in ranked:
-            normalized = sentence.casefold()
-            if normalized in seen:
-                continue
-            selected.append(f"{citation} {sentence}")
-            seen.add(normalized)
-            if len(selected) == 4:
-                break
-        return " ".join(selected)
+        content = first_block.split("\n", 1)[1].strip()
+        return f"[1] {content}" if content else "Không đủ thông tin trong ngữ cảnh được truy xuất."
 
     return answer
 
@@ -232,7 +220,7 @@ def render_sidebar(documents) -> tuple[dict, dict]:
             chunk_size = st.slider(
                 "Kích thước chunk",
                 min_value=150,
-                max_value=900,
+                max_value=2000,
                 value=settings["chunk_size"],
                 step=50,
             )
@@ -285,7 +273,7 @@ def render_sidebar(documents) -> tuple[dict, dict]:
         if category != "Không lọc":
             metadata_filter["category"] = category
 
-        st.caption("K3 RAG Library · dữ liệu Harvard Library công khai")
+        st.caption("K3 RAG Library · 9 nguồn RMIT Library công khai")
     return settings, metadata_filter
 
 
@@ -473,7 +461,10 @@ def _benchmark_rows(benchmark: dict, strategy_name: str) -> list[dict]:
 
 def render_benchmark_view() -> None:
     if not BENCHMARK_PATH.exists():
-        st.warning("Chưa có kết quả benchmark. Chạy `python scripts/run_benchmark.py`.")
+        st.warning(
+            "Chưa có kết quả benchmark. Chạy "
+            "`python scripts/run_rmit_benchmark.py --provider local`."
+        )
         return
     benchmark = load_benchmark()
     st.subheader(":material/analytics: Benchmark retrieval")
@@ -498,7 +489,11 @@ def render_benchmark_view() -> None:
     strategy_name = st.segmented_control(
         "Xem chi tiết chiến lược",
         options=list(benchmark["strategies"]),
-        default="recursive",
+        default=(
+            "nguyen_duc_anh_hierarchical_rerank"
+            if "nguyen_duc_anh_hierarchical_rerank" in benchmark["strategies"]
+            else next(iter(benchmark["strategies"]))
+        ),
         format_func=lambda value: STRATEGY_LABELS.get(value, value),
     )
     st.dataframe(
@@ -568,7 +563,7 @@ def render_corpus_view(documents) -> None:
     with st.container(horizontal=True):
         st.metric("Tài liệu", len(documents), border=True)
         st.metric("Nguồn có URL", sum(bool(row.get("source_url")) for row in sources), border=True)
-        st.metric("Chủ đề", "Harvard Library", border=True)
+        st.metric("Chủ đề", "RMIT Library", border=True)
 
     st.dataframe(
         sources,
