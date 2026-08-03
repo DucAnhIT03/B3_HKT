@@ -82,34 +82,21 @@ Thông số chung: `chunk_size=500`; comparator dùng FixedSize overlap 50, Sent
 
 > Mỗi thành viên điền một khối dưới đây (copy thêm nếu nhóm có nhiều hơn 3 người).
 
-**Thành viên 1 — [Tên]**
-- **Loại chiến lược:** [FixedSize / Sentence / Recursive / custom]
-- **Mô tả & lý do chọn cho chủ đề này:** *(2-3 câu)*
-- **Code snippet (nếu custom):**
-```python
-# Dán mã nguồn (implementation) vào đây
-```
-
-**Thành viên 2 — [Tên]**
-- **Loại chiến lược:**
-- **Mô tả & lý do chọn:**
-- **Code snippet (nếu custom):**
-
-**Thành viên 3 — [Tên]**
-- **Loại chiến lược:**
-- **Mô tả & lý do chọn:**
-- **Code snippet (nếu custom):**
+**Thành viên 1 — Nguyễn Đức Anh**
+- **Loại chiến lược:** RecursiveChunker (`chunk_size=500`)
+- **Mô tả & lý do chọn cho chủ đề này:** Corpus có cấu trúc heading, đoạn và câu rõ ràng nên RecursiveChunker ưu tiên được các ranh giới tự nhiên trước khi phải cắt theo ký tự. Chiến lược này được chọn làm kết quả cá nhân; FixedSize và Sentence chỉ là hai baseline chung để so sánh trên đúng cùng corpus/query.
+- **Code snippet (nếu custom):** Không có; dùng implementation `RecursiveChunker` trong `src/chunking.py`.
 
 ### So Sánh Giữa Các Thành Viên
 
 | Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
-| | | | | |
-| | | | | |
-| | | | | |
+| Baseline chung | FixedSize (`500`, overlap `50`) | 5 | Overlap giữ một phần ngữ cảnh biên; Q3 có evidence đúng ở top-1. | Có thể cắt giữa câu/mục; Q2 evidence chỉ ở rank 2 và Q5 thiếu section loại tài liệu. |
+| Baseline chung | Sentence (3 câu/chunk) | 5 | Q2 có chunk chứa đủ ba giới hạn ở top-1; câu không bị cắt. | Q3 evidence ở rank 2; Q4 cần hai chunk ở rank 1 và 3; Q5 sai section. |
+| Nguyễn Đức Anh | Recursive (`500`) | 6 | Q2 và Q3 có evidence đầy đủ ở top-1; cấu trúc đoạn/mục mạch lạc. | Q4 bị tách hai điều kiện sang hai chunk; Q5 đúng `doc_id` nhưng section chứa loại tài liệu ở rank 10. |
 
 **Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
-> *Viết 2-3 câu — đây là phần được đánh giá cao nhất (khả năng suy nghĩ & giải thích):*
+> Recursive tốt nhất trong lần chạy này với 6/10, cao hơn FixedSize và Sentence (cùng 5/10), chủ yếu vì evidence Q2 và Q3 đứng top-1. Tuy nhiên chênh lệch nhỏ và cả ba đều thất bại Q5, nên kết luận đúng là Recursive phù hợp hơn với cấu trúc hiện tại chứ chưa giải quyết được truy xuất nhiều section trong cùng tài liệu.
 
 ---
 
@@ -131,29 +118,54 @@ Thông số chung: `chunk_size=500`; comparator dùng FixedSize overlap 50, Sent
 
 > Cách chấm (theo `docs/SCORING.md`): **2 điểm/câu** — top-3 chứa chunk liên quan + agent trả lời đúng (2), có liên quan nhưng thiếu/không ở top-1 (1), không có trong top-3 (0).
 
+**Cấu hình đo:** local multilingual embedding `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (384 chiều, normalized), `top_k=3`; không dùng MockEmbedder. Agent dùng `llm_fn` extractive deterministic để chỉ đo grounding từ context và giữ citation. Raw result, marker, agent answer và top-3 đầy đủ nằm trong `report/benchmark_results.json`; chạy lại bằng `python scripts/run_benchmark.py --provider local`.
+
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
-| 4 | | | | |
-| 5 | | | | |
+| 1 | Hỗ trợ của First-Year Librarians | Hòa cả ba | Có | Marker nằm rank 1 nhưng agent extractive bỏ qua câu chứa “guidance, consultations and referrals”, nên chỉ 1 điểm. |
+| 2 | Giới hạn Libby | Sentence / Recursive | Có | Hai strategy đưa chunk chứa giới hạn mượn và đặt trước lên rank 1; FixedSize ở rank 2. |
+| 3 | Tự động gia hạn | FixedSize / Recursive | Có | Evidence đầy đủ ở rank 1; Sentence bị chunk BorrowDirect chiếm rank 1 nên evidence xuống rank 2. |
+| 4 | Đặt buổi hướng dẫn | FixedSize / Recursive | Có | Filter faculty giữ đủ hai chunk; thông tin “cách đặt” và “gửi sớm” bị tách, nên evidence hoàn chỉnh phải ghép rank 1+2. |
+| 5 | BorrowDirect: loại tài liệu + thời hạn | Không có | Không | Top-3 chỉ có section thời hạn; section “printed books and music scores” nằm rank 5/13/10 tương ứng Fixed/Sentence/Recursive. |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-> *Viết 2-3 câu:*
+> Với Q1, filter `student` không đổi rank/điểm: hai kết quả đầu vẫn là tài liệu sinh viên năm nhất, nhưng nó loại một chunk faculty khỏi slot thứ ba; filter giảm nhiễu nhưng query vốn đã đủ đặc trưng. Với Q4, filter `faculty` hữu ích rõ hơn: Sentence tăng từ 0 lên 1 điểm vì unfiltered top-3 thiếu marker “gửi sớm”; Fixed/Recursive giữ evidence nhưng filter loại chunk sinh viên khiến agent extractive chọn đủ hai điều kiện. Đây là ví dụ filter tăng precision/grounding nhưng có thể giảm recall nếu metadata gán sai.
+
+| Query | Strategy | Không filter | Có filter | Kết luận A/B |
+|-------|----------|--------------|------------|--------------|
+| Q1 `student` | Fixed | 1 điểm, agent thiếu marker | 1 điểm, agent thiếu marker | Filter chỉ loại một chunk faculty ở rank 3. |
+| Q1 `student` | Sentence | 1 điểm, agent thiếu marker | 1 điểm, agent thiếu marker | Hai rank đầu giống nhau; không cải thiện generation. |
+| Q1 `student` | Recursive | 1 điểm, agent thiếu marker | 1 điểm, agent thiếu marker | Giảm nhiễu nhưng query đã tự phân biệt tốt. |
+| Q4 `faculty` | Fixed | 1 điểm, agent thiếu marker | 1 điểm, agent đúng | Evidence vẫn có, filter giúp bước chọn câu. |
+| Q4 `faculty` | Sentence | 0 điểm, thiếu marker trong top-3 | 1 điểm, agent đúng | Filter đưa chunk “gửi sớm” trở lại top-3. |
+| Q4 `faculty` | Recursive | 1 điểm, agent thiếu marker | 1 điểm, agent đúng | Filter thay chunk sinh viên bằng chunk faculty liên quan. |
+
+### Failure analysis có bằng chứng
+
+**Failure chính — Q5, RecursiveChunker:**
+
+- **Top-3:** `borrowdirect#1` (0,745, chỉ có “16 weeks / cannot be renewed”); `libby-harvard#1` (0,671, chính sách mượn số khác); `borrow-renew-return#2` (0,641, chính sách mượn thông thường khác).
+- **Bằng chứng bị thiếu:** `borrowdirect#2`, chứa “printed books and music scores”, chỉ đứng rank 10 với score 0,307. Vì vậy kiểm `doc_id=borrowdirect` sẽ báo đậu sai, còn kiểm marker ở mức chunk cho kết quả 0 điểm.
+- **Nguyên nhân:** query hỏi hai khía cạnh nằm ở hai section; cosine ưu tiên section có từ vựng về thời hạn/gia hạn và các chunk chính sách mượn có số liệu tương tự, không đo mức độ bao phủ toàn bộ câu hỏi.
+- **Thay đổi đề xuất:** prepend tiêu đề tài liệu + tiêu đề section vào mỗi chunk, thêm overlap/neighbor expansion giữa các section liên tiếp, hoặc rerank theo coverage của các thực thể “loại tài liệu + thời hạn + gia hạn”. Tăng `top_k` đơn thuần có thể lấy được evidence nhưng làm context nhiễu hơn.
+
+**Grounding:** Q2, Q3 và Q4 có câu trả lời extractive chứa đủ marker; Q1 và Q5 không đủ dù Q1/Q5 đều có đúng `doc_id` trong top đầu. Kết quả này cho thấy score và doc-level hit chỉ là tín hiệu xếp hạng, không phải bằng chứng câu trả lời đúng.
 
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
 
 **Những phân tích (insights) hay nhất nhóm sẽ trình bày:**
-> *Liệt kê 2-3 ý:*
+
+- Chấm theo `doc_id` sẽ che giấu failure Q5: đúng tài liệu nhưng sai section trong top-3.
+- Filter không mặc định hữu ích: Q1 gần như không đổi, trong khi Q4 cải thiện evidence/agent rõ rệt.
+- Recursive thắng tổng điểm nhưng vẫn cần neighbor expansion hoặc reranking cho query nhiều điều kiện.
 
 **Bài học rút ra khi so sánh trong nhóm:**
-> *Viết 2-3 câu — cùng tài liệu nhưng chiến lược khác nhau dẫn tới khác biệt gì?*
+> Cùng corpus và embedder, cách đặt ranh giới làm thay đổi thứ hạng evidence: Sentence tốt cho Q2 vì giữ toàn bộ giới hạn trong một câu/chunk, còn Recursive/Fixed tốt hơn Q3. Không strategy nào tự động giải quyết câu hỏi cần ghép hai section, nên đánh giá phải xem nội dung chunk chứ không chỉ score hoặc tài liệu nguồn.
 
 **Nếu làm lại, nhóm sẽ thay đổi gì trong chiến lược dữ liệu (data strategy)?**
-> *Viết 2-3 câu:*
+> Nhóm sẽ bổ sung section title vào text được embed, lưu `section` trong metadata và thử lấy thêm chunk lân cận của cùng `doc_id` sau khi có top hit. Benchmark script và marker cố định sẽ được giữ nguyên để so sánh A/B công bằng, tránh sửa query sau khi đã xem kết quả.
 
 ---
 

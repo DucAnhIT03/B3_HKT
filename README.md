@@ -246,3 +246,14 @@ Xem chi tiết tại `docs/SCORING.md`. Tóm tắt:
 ```bash
 pytest tests/ -v
 ```
+
+## Chạy Giao Diện Streamlit
+
+Giao diện gồm ba màn hình: hỏi đáp RAG có dẫn nguồn, dashboard benchmark và trình đọc kho dữ liệu.
+
+```bash
+pip install -r requirements.txt
+python -m streamlit run streamlit_app.py
+```
+
+Mở `http://localhost:8501`. Chế độ **Mock deterministic** chỉ dùng để kiểm tra luồng kỹ thuật. Để truy xuất ngữ nghĩa tiếng Việt tốt hơn, cài thêm `requirements-local.txt` và chọn **Local multilingual** trong sidebar.
