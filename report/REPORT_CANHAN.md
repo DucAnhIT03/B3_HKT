@@ -1,7 +1,11 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
-**Họ tên:** [Chưa cung cấp]
-**Nhóm:** [Chưa cung cấp]
+**Họ tên:** Phan Văn Hiếu
+
+**MSSV:** 2A202601227
+
+**Nhóm:** B3_HKT
+
 **Ngày:** 03/08/2026
 
 > **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
@@ -64,6 +68,12 @@ Giải thích cách tiếp cận của bạn khi lập trình (implement) các p
 > lớn. Base case là đoạn đã đủ ngắn; khi hết separator, hàm cắt cứng theo kích
 > thước để luôn kết thúc và vẫn giữ giới hạn độ dài.
 
+**`compute_similarity` + `ChunkingStrategyComparator.compare`** — hướng tiếp cận:
+> `compute_similarity` tính tích vô hướng rồi chia cho tích độ lớn của hai vector;
+> nếu một vector có norm bằng 0 thì trả `0.0` để tránh chia cho 0. Comparator chạy
+> cùng một văn bản qua FixedSize, Sentence và Recursive, sau đó trả số chunk, độ
+> dài trung bình và nội dung chunk để so sánh định lượng lẫn độ mạch lạc.
+
 ### Lớp EmbeddingStore
 
 **`add_documents` + `search`** — hướng tiếp cận:
@@ -85,6 +95,8 @@ Giải thích cách tiếp cận của bạn khi lập trình (implement) các p
 > để truy vết. Prompt chứa chỉ dẫn chỉ trả lời dựa trên context, yêu cầu thừa nhận
 > khi thiếu thông tin, tiếp theo là các chunk, câu hỏi và vị trí bắt đầu câu trả lời.
 > Nếu store không trả về chunk nào, agent trả thông báo rõ ràng ngay và không gọi LLM.
+> Tôi mở rộng tham số `metadata_filter` để query bắt buộc của K3 đi qua
+> `search_with_filter()` nhưng vẫn giữ hành vi cũ khi filter là `None`.
 
 ---
 
@@ -105,20 +117,32 @@ tests/test_solution.py ..........................................        [100%]
 
 **Số lượng bài test vượt qua (pass):** **42 / 42**
 
+**Môi trường kiểm tra:** Python 3.11 trong `.venv`; lệnh
+`python -m pytest tests -v`. Bộ test kiểm tra chunking, cosine, comparator,
+EmbeddingStore (add/search/filter/delete) và KnowledgeBaseAgent.
+
 ---
 
 ## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)
 
 | Cặp | Câu A | Câu B | Dự đoán | Điểm thực tế | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
-| 1 | | | cao / thấp | | |
-| 2 | | | cao / thấp | | |
-| 3 | | | cao / thấp | | |
-| 4 | | | cao / thấp | | |
-| 5 | | | cao / thấp | | |
+| 1 | How many books can undergraduate students borrow? | What is the borrowing quota for undergraduate students? | Cao nhất | 0.7290 | Đúng |
+| 2 | Students must log in to book a library study room. | A library room reservation requires an RMIT account login. | Cao | 0.6191 | Đúng |
+| 3 | A borrowed item may be renewed when it is not overdue. | Overdue library items must be returned and may incur a fine. | Trung bình | 0.4976 | Đúng |
+| 4 | The Library converts PDF documents to text for accessibility. | Teachers can request workshops about using library databases. | Thấp–trung bình | 0.4165 | Đúng |
+| 5 | The library opens at eight o'clock in the morning. | Heavy rain is expected in the city this afternoon. | Thấp nhất | 0.1162 | Đúng |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn ý nghĩa?**
-> *Viết 2-3 câu:*
+> Cặp 4 vẫn đạt 0.4165 dù hai câu phục vụ hai đối tượng và hai tác vụ khác nhau;
+> nguyên nhân là chúng cùng chứa ngữ cảnh chung về Library và support. Điều này
+> cho thấy embedding nắm bắt chủ đề tổng quát khá tốt nhưng điểm giống chủ đề
+> không đảm bảo chunk chứa đúng dữ kiện trả lời; vì vậy benchmark phải kiểm
+> evidence trong chunk và metadata, không chỉ nhìn score.
+
+> Các điểm trên được đo bằng
+> `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, sau đó truyền hai
+> vector chuẩn hóa vào chính hàm `compute_similarity()` của dự án.
 
 ---
 
@@ -128,16 +152,69 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| 1 | Undergraduate/postgraduate borrowing quota, period, renewals | Chunk có cả English students (10 items) và undergraduate/postgraduate (25 items, 30 days, 1 renewal) | 0.6875 | Có evidence nhưng lẫn đối tượng | Agent trích cả 10 và 25 items nên cần đọc heading để chọn đúng 25. |
+| 2 | Conditions and duration for renewal | Chunk Alumni chứa điều kiện không overdue/reserved, 15 ngày, tối đa 45 ngày | 0.7372 | Có, evidence top-1 | Agent trích đúng điều kiện và thời hạn áp dụng chung. |
+| 3 | Steps to book a study room | Chunk chứa trọn log in, chọn campus/phòng/thời gian và confirm | 0.7372 | Có, evidence top-1 | Agent trích đúng quy trình. |
+| 4 | Accessibility support | Chunk digitisation, digital resources, PDF-to-text | 0.6128 | Có, evidence top-1 | Agent trích đúng ba hỗ trợ với `audience=student`. |
+| 5 | Reasons not accepted when disputing a fine | Chunk chứa heading ngoại lệ và ba lý do đầu | 0.7471 | Có evidence nhưng gold answer còn tiếp ở rank 2 | Agent trả đúng nhưng chưa đầy đủ toàn bộ danh sách. |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+**Bao nhiêu câu hỏi trả về chunk có evidence trong top-3?** **5 / 5**
 
-**Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
+**Điểm evidence-rank của strategy cá nhân:** **10 / 10**
+
+**Điểm rubric bảo thủ khi tính độ đầy đủ agent:** **8 / 10** (Q1 mơ hồ do lẫn
+đối tượng; Q5 Context 1 chỉ chứa nửa đầu danh sách).
+
+**Cấu hình benchmark:**
+- Embedder: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`.
+- Strategy: `RecursiveChunker(chunk_size=300)` — 166 chunks; được chọn qua grid
+  search size 250–800 trên cùng benchmark.
+- Quy tắc chấm: evidence top-1 = 2; evidence top-2/3 = 1; không có trong top-3 = 0.
+- Agent dùng `extractive_demo_llm`, chỉ trích Context 1 để đo grounding mà không
+  phát sinh thông tin ngoài nguồn.
+
+### Chi tiết top-3 theo evidence
+
+| Query | Rank | Score | `doc_id::chunk_index` | Evidence đáp án? | Nhận xét |
+|------:|-----:|------:|------------------------|------------------|----------|
+| 1 | 1 | 0.6875 | `rmit-borrowing-returning::2` | **Có** | Có 25/30/1 nhưng phần đầu chunk còn quota 10 của English students. |
+| 1 | 2 | 0.6583 | `rmit-borrowing-returning::6` | Không | Nội dung renewal/alumni/returns, thiếu evidence undergraduate. |
+| 1 | 3 | 0.5897 | `rmit-borrowing-returning::4` | Không | Professional staff, sai đối tượng. |
+| 2 | 1 | 0.7372 | `rmit-borrowing-returning::5` | **Có** | Chứa đủ điều kiện overdue/reservation và 15/45 ngày. |
+| 2 | 2 | 0.6986 | `rmit-borrowing-returning::3` | **Có** | Cùng quy tắc renewal trong section trước. |
+| 2 | 3 | 0.6867 | `rmit-borrowing-returning::4` | Không | Có điều kiện nhưng thời gian renewal bị cắt sang chunk kế tiếp. |
+| 3 | 1 | 0.7372 | `rmit-study-room-booking::1` | **Có** | Chứa đủ log in, choose campus, select room/time, confirm. |
+| 3 | 2 | 0.7043 | `rmit-study-room-booking::2` | Không | Chính sách first-come/đặt trước. |
+| 3 | 3 | 0.6674 | `rmit-study-room-booking::0` | Không | Giới thiệu và kiểm tra availability. |
+| 4 | 1 | 0.6128 | `rmit-accessibility-resources::0` | **Có** | Chứa đủ ba evidence phrase accessibility. |
+| 4 | 2 | 0.6086 | `rmit-study-faq::97` | Không | Thông tin database chung. |
+| 4 | 3 | 0.5920 | `rmit-study-faq::102` | Không | Google Scholar/support, không phải accessibility. |
+| 5 | 1 | 0.7471 | `rmit-borrowing-returning::13` | **Có** | Heading ngoại lệ và ba lý do đầu; danh sách còn tiếp. |
+| 5 | 2 | 0.4922 | `rmit-borrowing-returning::14` | Không | Nửa sau danh sách; cần kết hợp với rank 1 để đủ gold answer. |
+| 5 | 3 | 0.4792 | `rmit-library-rules::2` | Không | Quy tắc sử dụng thư viện, không phải dispute reasons. |
+
+### A/B metadata filter — Query 4
+
+Không filter, cả ba kết quả top-3 đều không chứa evidence trả lời. Khi lọc
+`{"audience": "student"}`, chunk
+`rmit-accessibility-resources::chunk_0` lên top-1 với score 0.6128 và chứa đủ ba
+evidence phrase. Filter đã giảm nhiễu rõ rệt, không loại nhầm đáp án.
+
+### Failure analysis — Query 1
+
+Evidence checker cho 2 điểm vì top-1 chứa đủ 25 items, 30 days và 1 renewal.
+Tuy nhiên chunk bắt đầu bằng quota 10 items của English students rồi mới sang
+heading undergraduate/postgraduate, khiến extractive agent đưa ra cả hai số.
+Nguyên nhân là Recursive 300 ghép hai subsection liền nhau khi còn dưới ngưỡng;
+score cao không phát hiện thông tin cạnh tranh. Tôi đề xuất thêm boundary rule tại
+heading vai trò hoặc trích từ đúng heading undergraduate trước khi tạo câu trả lời.
+
+**Điều hay nhất tôi học được qua phần so sánh/demo:**
+> Tại thời điểm hoàn thiện phần cá nhân, tôi chưa ghép kết quả chính thức của các
+> thành viên khác. So sánh có kiểm soát với các baseline cho thấy Recursive 300
+> đạt evidence-rank 10/10, cao hơn Recursive 400 (8/10) và Heading 400 (6/10).
+> Tuy vậy kiểm tra thủ công Q1 vẫn phát hiện thông tin thừa, nên phải kết hợp
+> metric tự động với đánh giá coherence/grounding.
 
 ---
 
@@ -145,9 +222,9 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 
 | Tiêu chí | Điểm tự đánh giá |
 |----------|-------------------|
-| Khởi động (Warm-up) | / 5 |
-| Hướng tiếp cận của tôi (My Approach) | / 10 |
-| Hoàn thiện code (Core Implementation — tests) | / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+| Khởi động (Warm-up) | 5 / 5 |
+| Hướng tiếp cận của tôi (My Approach) | 10 / 10 |
+| Hoàn thiện code (Core Implementation — tests) | 30 / 30 |
+| Dự đoán độ tương tự (Similarity Predictions) | 5 / 5 |
+| Kết quả truy xuất của tôi (Competition Results) | 8 / 10 (evidence-rank 10/10) |
+| **Tổng phần cá nhân** | **58 / 60** |

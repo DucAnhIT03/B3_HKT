@@ -17,8 +17,20 @@ class KnowledgeBaseAgent:
         self.store = store
         self.llm_fn = llm_fn
 
-    def answer(self, question: str, top_k: int = 3) -> str:
-        results = self.store.search(question, top_k=top_k)
+    def answer(
+        self,
+        question: str,
+        top_k: int = 3,
+        metadata_filter: dict | None = None,
+    ) -> str:
+        if metadata_filter is None:
+            results = self.store.search(question, top_k=top_k)
+        else:
+            results = self.store.search_with_filter(
+                question,
+                top_k=top_k,
+                metadata_filter=metadata_filter,
+            )
         if not results:
             return "Không tìm thấy ngữ cảnh phù hợp để trả lời câu hỏi."
 
