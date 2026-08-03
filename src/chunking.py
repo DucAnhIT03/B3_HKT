@@ -125,6 +125,55 @@ class RecursiveChunker:
         return chunks
 
 
+class HeadingAwareChunker:
+    """Split Markdown by heading, then recursively split oversized sections.
+
+    The section heading is repeated on every child chunk so retrieved fragments
+    keep their local context even after a long section has been divided.
+    """
+
+    HEADING_PATTERN = r"^#{1,6}\s+"
+
+    def __init__(self, max_chunk_size: int = 400) -> None:
+        self.max_chunk_size = max(1, max_chunk_size)
+
+    def chunk(self, text: str) -> list[str]:
+        if not text.strip():
+            return []
+
+        sections = re.split(
+            rf"(?={self.HEADING_PATTERN})",
+            text.strip(),
+            flags=re.MULTILINE,
+        )
+        chunks: list[str] = []
+
+        for section in sections:
+            section = section.strip()
+            if not section:
+                continue
+
+            lines = section.splitlines()
+            has_heading = bool(re.match(self.HEADING_PATTERN, lines[0]))
+            heading = lines[0].strip() if has_heading else ""
+            body = "\n".join(lines[1:]).strip() if has_heading else section
+
+            if len(section) <= self.max_chunk_size:
+                chunks.append(section)
+                continue
+
+            prefix = f"{heading}\n" if heading else ""
+            body_chunk_size = max(1, self.max_chunk_size - len(prefix))
+            recursive = RecursiveChunker(chunk_size=body_chunk_size)
+
+            for child in recursive.chunk(body):
+                chunk = f"{prefix}{child}".strip()
+                if chunk:
+                    chunks.append(chunk)
+
+        return chunks
+
+
 def _dot(a: list[float], b: list[float]) -> float:
     return sum(x * y for x, y in zip(a, b))
 
