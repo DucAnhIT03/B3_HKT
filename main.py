@@ -22,6 +22,14 @@ from src.embeddings import (
 DEFAULT_DATA_DIR = "data/k3_university"
 
 
+def _configure_console_encoding() -> None:
+    """Cho phép in tiếng Việt ổn định trên PowerShell/cmd của Windows."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def _select_embedder():
     """Chọn backend nhúng theo biến môi trường EMBEDDING_PROVIDER (mock | local | openai)."""
     load_dotenv(override=False)
@@ -85,6 +93,7 @@ def run_manual_demo(question: str | None = None, data_dir: str | None = None) ->
 
 
 def main() -> int:
+    _configure_console_encoding()
     question = " ".join(sys.argv[1:]).strip() or None
     data_dir = os.getenv("LAB_DATA_DIR", DEFAULT_DATA_DIR)
     return run_manual_demo(question=question, data_dir=data_dir)
