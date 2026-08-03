@@ -1,8 +1,8 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
-**Họ tên:** [Tên sinh viên]
-**Nhóm:** [Tên nhóm]
-**Ngày:** [Ngày nộp]
+**Họ tên:** Nguyễn Huy Tỏa
+**Nhóm:** HKT
+**Ngày:** 3/8
 
 > **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
 
@@ -133,16 +133,18 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 
 ## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)
 
+Các điểm thực tế được đo bằng local embedding `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` và hàm `compute_similarity()`. Để đối chiếu cột dự đoán theo hai mức, tôi quy ước cosine score **từ 0.50 trở lên là cao**, dưới 0.50 là thấp; đây chỉ là ngưỡng thực hành cho 5 cặp này, không phải ngưỡng phổ quát cho mọi hệ thống embedding.
+
 | Cặp | Câu A | Câu B | Dự đoán | Điểm thực tế | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
-| 1 | | | cao / thấp | | |
-| 2 | | | cao / thấp | | |
-| 3 | | | cao / thấp | | |
-| 4 | | | cao / thấp | | |
-| 5 | | | cao / thấp | | |
+| 1 | Students may borrow 25 items for 30 days. | Undergraduate and postgraduate students have a loan quota of 25 items and a loan period of 30 days. | Cao — hai câu cùng số lượng và thời hạn mượn. | **0.8111** (cao) | Đúng |
+| 2 | Log in with your RMIT account to book a library study room. | Use your RMIT credentials, choose a campus, room and time, then confirm the reservation. | Cao — hai câu cùng mô tả quy trình đặt phòng bằng tài khoản RMIT. | **0.4760** (thấp) | Sai |
+| 3 | The library is closed on public holidays. | Overdue library items incur a fine of VND 5,000 per item per day. | Thấp — một câu nói về giờ hoạt động, câu còn lại nói về tiền phạt. | **0.2648** (thấp) | Đúng |
+| 4 | The library converts PDF documents to text for students with disabilities. | Lecturers can embed library resources in Canvas course content. | Thấp — cùng nhắc tài nguyên thư viện nhưng khác đối tượng và mục đích hỗ trợ. | **0.4761** (thấp) | Đúng |
+| 5 | Food is allowed inside the library. | Users can bring beverages but not food into the library. | Thấp — hai phát biểu trái ngược nhau về việc mang đồ ăn. | **0.5524** (cao) | Sai |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn ý nghĩa?**
-> *Viết 2-3 câu:*
+> Cặp 5 bất ngờ nhất vì hai câu mâu thuẫn về việc cho phép đồ ăn nhưng vẫn đạt cosine 0.5524 và bị xếp mức cao. Kết quả này cho thấy embedding nhận ra rất mạnh chủ đề và từ vựng chung như “food”, “allowed” và “library”, nhưng không phải lúc nào cũng biểu diễn tốt phủ định hoặc tính đúng-sai của mệnh đề. Cặp 2 cũng cho thấy các câu mô tả cùng quy trình có thể chưa đạt điểm cao khi cách diễn đạt và lượng chi tiết khác nhau.
 
 ---
 
@@ -223,17 +225,15 @@ Filter đã thay đổi toàn bộ top-3 và cải thiện precision rõ rệt: 
 | Failure case | Query 5 cho thấy cùng `doc_id` không đủ để kết luận retrieval đúng; phải kiểm nội dung chunk và evidence thực tế. |
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
-
----
+> Qua phần demo và so sánh trong nhóm, tôi nhận ra không có chiến lược chunking nào tốt nhất cho mọi loại câu hỏi; cùng một corpus và embedder nhưng cách chia chunk khác nhau có thể làm gold chunk thay đổi thứ hạng. Tôi cũng học được rằng score cao chỉ phản ánh mức độ tương đồng chủ đề, không bảo đảm chunk chứa đáp án, nên cần kiểm tra evidence ở mức nội dung. Ngoài ra, metadata filter có thể cải thiện precision mạnh hơn việc chỉ tinh chỉnh kích thước chunk đối với các câu hỏi phụ thuộc đối tượng.
 
 ## Tự Đánh Giá (Phần Cá Nhân)
 
 | Tiêu chí | Điểm tự đánh giá |
 |----------|-------------------|
-| Khởi động (Warm-up) | / 5 |
-| Hướng tiếp cận của tôi (My Approach) | / 10 |
-| Hoàn thiện code (Core Implementation — tests) | / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+| Khởi động (Warm-up) | **5 / 5** |
+| Hướng tiếp cận của tôi (My Approach) | **10 / 10** |
+| Hoàn thiện code (Core Implementation — tests) | **30 / 30** — 42/42 tests passed |
+| Dự đoán độ tương tự (Similarity Predictions) | **5 / 5** — đủ 5 cặp, điểm thực tế và phần phản ánh |
+| Kết quả truy xuất của tôi (Competition Results) | **8 / 10** — theo rubric 5 benchmark queries |
+| **Tổng phần cá nhân** | **58 / 60** |
