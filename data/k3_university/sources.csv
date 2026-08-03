@@ -1,3 +1,6 @@
 doc_id,file_path,title,source_url,retrieved_at,document_version,license_or_permission
-k3-course-registration,data/k3_university/course-registration.md,Đăng ký học phần,https://example.edu/hoc-vu/dang-ky-hoc-phan,2026-08-02,2026.1,example-template-replace-me
-k3-library-services,data/k3_university/library-services.md,Dịch vụ thư viện,https://example.edu/thu-vien/dich-vu,2026-08-02,2026.1,example-template-replace-me
+borrow-renew-return,data/k3_university/borrow-renew-return.md,Borrow renew and return library materials,https://library.harvard.edu/how-to/borrow-renew-and-return-library-materials,2026-08-03,not-stated,public-page
+borrowdirect,data/k3_university/borrowdirect.md,BorrowDirect,https://library.harvard.edu/services-tools/borrowdirect,2026-08-03,not-stated,public-page
+librarians-first-year-students,data/k3_university/librarians-first-year-students.md,Librarians for First-Year Students,https://library.harvard.edu/services-tools/librarians-first-year-students,2026-08-03,not-stated,public-page
+libby-harvard,data/k3_university/libby-harvard.md,Libby for Harvard,https://library.harvard.edu/services-tools/libby-harvard,2026-08-03,not-stated,public-page
+teach-with-library,data/k3_university/teach-with-library.md,Teach with the Library,https://library.harvard.edu/services-tools/teach-library,2026-08-03,not-stated,public-page
