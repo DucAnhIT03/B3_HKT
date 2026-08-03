@@ -2,8 +2,7 @@
 
 **Họ tên:** Nguyễn Đức Anh
 
-**Mã sinh viên:** 2A202601063___
-
+**Mã sinh viên:** 2A202601063
 **Nhóm:** B3_HKT
 
 **Ngày:** 2026-08-03
