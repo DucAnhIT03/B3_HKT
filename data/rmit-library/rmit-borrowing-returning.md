@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-borrowing-returning"
+doc_id: rmit-borrowing-returning
 title: "Borrowing and returning"
 source_url: "https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/borrowing-and-returning"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "all"
+audience: all
 department: "library"
 category: "borrowing-policy"
 language: "en"

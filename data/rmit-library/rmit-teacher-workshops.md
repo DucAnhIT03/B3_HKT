@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-teacher-workshops"
+doc_id: rmit-teacher-workshops
 title: "Workshops and consultations for students"
 source_url: "https://www.rmit.edu.vn/libraryvn/teacher-support/organise-workshops-and-consultations-for-your-students"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "faculty"
+audience: faculty
 department: "library"
 category: "teacher-support"
 language: "en"

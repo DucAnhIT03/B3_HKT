@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-course-content-support"
+doc_id: rmit-course-content-support
 title: "Develop course content"
 source_url: "https://www.rmit.edu.vn/libraryvn/teacher-support/developing-course-content"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "faculty"
+audience: faculty
 department: "library"
 category: "teacher-support"
 language: "en"

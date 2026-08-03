@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-library-hours"
+doc_id: rmit-library-hours
 title: "Library hours and locations"
 source_url: "https://www.rmit.edu.vn/libraryvn/about-us/hours-and-locations"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "all"
+audience: all
 department: "library"
 category: "opening-hours"
 language: "en"

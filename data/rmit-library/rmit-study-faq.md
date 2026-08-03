@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-study-faq"
+doc_id: rmit-study-faq
 title: "Study FAQs"
 source_url: "https://www.rmit.edu.vn/libraryvn/student-support/study-faq"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "student"
+audience: student
 department: "library"
 category: "student-support"
 language: "en"

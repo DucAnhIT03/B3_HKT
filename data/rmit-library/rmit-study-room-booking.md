@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-study-room-booking"
+doc_id: rmit-study-room-booking
 title: "Book a study room"
 source_url: "https://www.rmit.edu.vn/libraryvn/student-support/book-a-study-room"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "student"
+audience: student
 department: "library"
 category: "room-booking"
 language: "en"

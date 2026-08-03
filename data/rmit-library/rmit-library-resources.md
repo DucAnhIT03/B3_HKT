@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-library-resources"
+doc_id: rmit-library-resources
 title: "Library resources and collections"
 source_url: "https://www.rmit.edu.vn/libraryvn/borrowing-and-resources/library-resources"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "all"
+audience: all
 department: "library"
 category: "library-resources"
 language: "en"

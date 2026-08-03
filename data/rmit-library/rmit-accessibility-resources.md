@@ -1,10 +1,10 @@
 ---
-doc_id: "rmit-accessibility-resources"
+doc_id: rmit-accessibility-resources
 title: "Resources for students with a disability"
 source_url: "https://www.rmit.edu.vn/libraryvn/student-support/resources-for-students-with-a-disability"
 retrieved_at: "2026-08-03"
 document_version: "not-stated"
-audience: "student"
+audience: student
 department: "library"
 category: "accessibility"
 language: "en"
