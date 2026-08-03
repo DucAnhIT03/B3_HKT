@@ -23,6 +23,7 @@ from ingest import chunk_document, load_documents  # noqa: E402
 from src.agent import KnowledgeBaseAgent  # noqa: E402
 from src.chunking import (  # noqa: E402
     FixedSizeChunker,
+    HeadingWindowChunker,
     RecursiveChunker,
     SentenceChunker,
     _dot,
@@ -92,6 +93,52 @@ class StaticResultStore:
         return self.results[:top_k]
 
 
+class SentenceRerankingStore:
+    """Rerank chunks by their most answerable sentence.
+
+    Chunk cosine captures topic similarity; max-sentence cosine rewards a chunk
+    that contains one highly relevant factual sentence. The two signals are
+    averaged so provenance and section context still contribute to ranking.
+    """
+
+    def __init__(self, store: EmbeddingStore, embedding_fn: Callable[[str], list[float]]) -> None:
+        self.store = store
+        self.embedding_fn = embedding_fn
+
+    def get_collection_size(self) -> int:
+        return self.store.get_collection_size()
+
+    def search_with_filter(
+        self,
+        query: str,
+        top_k: int = 3,
+        metadata_filter: dict | None = None,
+    ) -> list[dict]:
+        candidates = self.store.search_with_filter(
+            query,
+            top_k=self.store.get_collection_size(),
+            metadata_filter=metadata_filter,
+        )
+        query_vector = self.embedding_fn(query)
+        reranked: list[dict] = []
+        for candidate in candidates:
+            sentences = [
+                sentence.strip()
+                for sentence in re.split(r"(?<=[.!?])\s+|\n+", candidate["content"])
+                if len(sentence.strip()) >= 20
+            ]
+            sentence_score = max(
+                (_dot(query_vector, self.embedding_fn(sentence)) for sentence in sentences),
+                default=float(candidate["score"]),
+            )
+            result = dict(candidate)
+            result["base_score"] = float(candidate["score"])
+            result["sentence_score"] = float(sentence_score)
+            result["score"] = (result["base_score"] + result["sentence_score"]) / 2
+            reranked.append(result)
+        return sorted(reranked, key=lambda item: item["score"], reverse=True)[:top_k]
+
+
 def make_cached_embedder(provider: str) -> tuple[Callable[[str], list[float]], str]:
     backend = _mock_embed if provider == "mock" else LocalEmbedder(LOCAL_EMBEDDING_MODEL)
 
@@ -115,20 +162,27 @@ def make_extractive_llm(embedding_fn: Callable[[str], list[float]]) -> Callable[
             return "Không đủ thông tin trong context."
 
         question = question_match.group(1).strip()
-        candidates: list[tuple[str, str]] = []
+        candidates: list[tuple[str, str, str]] = []
         blocks = re.split(r"(?m)(?=^\[\d+\])", context_match.group(1))
         for block in blocks:
             lines = block.strip().splitlines()
             if len(lines) < 2 or not lines[0].startswith("["):
                 continue
             citation = lines[0].split("]", 1)[0] + "]"
-            content = "\n".join(lines[1:])
-            sentences = re.split(r"(?<=[.!?])\s+|\n+", content)
-            candidates.extend(
-                (citation, sentence.strip())
-                for sentence in sentences
-                if len(sentence.strip()) >= 20
-            )
+            section = "__intro__"
+            for line in lines[1:]:
+                stripped = line.strip()
+                if stripped.startswith("## "):
+                    section = stripped
+                    continue
+                if stripped.startswith("# "):
+                    continue
+                sentences = re.split(r"(?<=[.!?])\s+", stripped)
+                candidates.extend(
+                    (citation, section, sentence.strip())
+                    for sentence in sentences
+                    if len(sentence.strip()) >= 20
+                )
 
         if not candidates:
             return "Không đủ thông tin trong context."
@@ -136,20 +190,39 @@ def make_extractive_llm(embedding_fn: Callable[[str], list[float]]) -> Callable[
         query_vector = embedding_fn(question)
         ranked = sorted(
             candidates,
-            key=lambda item: _dot(query_vector, embedding_fn(item[1])),
+            key=lambda item: _dot(query_vector, embedding_fn(item[2])),
             reverse=True,
         )
         selected: list[str] = []
         seen: set[str] = set()
-        for citation, sentence in ranked:
-            normalized = sentence.casefold()
-            if normalized in seen:
-                continue
-            selected.append(f"{citation} {sentence}")
-            seen.add(normalized)
-            if len(selected) == 4:
-                break
-        return " ".join(selected)
+        citations = list(dict.fromkeys(citation for citation, _section, _sentence in candidates))
+        for citation in citations:
+            sections = list(
+                dict.fromkeys(
+                    section
+                    for source_citation, section, _sentence in candidates
+                    if source_citation == citation
+                )
+            )
+            for section in sections:
+                source_order = [
+                    item
+                    for item in candidates
+                    if item[0] == citation and item[1] == section
+                ]
+                relevance_order = [
+                    item
+                    for item in ranked
+                    if item[0] == citation and item[1] == section
+                ]
+                per_section = source_order[:2] + relevance_order[:1]
+                for source_citation, _section, sentence in per_section:
+                    normalized = sentence.casefold()
+                    if normalized in seen:
+                        continue
+                    selected.append(f"{source_citation} {sentence}")
+                    seen.add(normalized)
+        return " ".join(selected[:8])
 
     return answer
 
@@ -173,7 +246,7 @@ def marker_rank(results: list[dict], markers: list[str]) -> int | None:
 
 def serialize_result(result: dict, markers: list[str]) -> dict:
     content = result["content"]
-    return {
+    serialized = {
         "id": result["id"],
         "doc_id": result["metadata"].get("doc_id"),
         "chunk_index": result["metadata"].get("chunk_index"),
@@ -181,6 +254,10 @@ def serialize_result(result: dict, markers: list[str]) -> dict:
         "marker_hits": [marker for marker in markers if marker.casefold() in content.casefold()],
         "content": content,
     }
+    if "base_score" in result:
+        serialized["base_score"] = round(float(result["base_score"]), 6)
+        serialized["sentence_score"] = round(float(result["sentence_score"]), 6)
+    return serialized
 
 
 def evaluate_query(
@@ -222,6 +299,7 @@ def run(provider: str, data_dir: Path) -> dict:
         "fixed_size": FixedSizeChunker(chunk_size=500, overlap=50),
         "by_sentences": SentenceChunker(max_sentences_per_chunk=3),
         "recursive": RecursiveChunker(chunk_size=500),
+        "heading_windows": HeadingWindowChunker(sections_per_chunk=2, chunk_size=1200),
     }
     documents = load_documents(data_dir)
     output = {
@@ -236,11 +314,16 @@ def run(provider: str, data_dir: Path) -> dict:
 
     for strategy_name, chunker in strategies.items():
         chunks = [chunk for doc in documents for chunk in chunk_document(doc, chunker)]
-        store = EmbeddingStore(
+        base_store = EmbeddingStore(
             collection_name=f"benchmark_{strategy_name}",
             embedding_fn=embedding_fn,
         )
-        store.add_documents(chunks)
+        base_store.add_documents(chunks)
+        store = (
+            SentenceRerankingStore(base_store, embedding_fn)
+            if strategy_name == "heading_windows"
+            else base_store
+        )
         query_results: list[dict] = []
         for query_spec in QUERIES:
             primary = evaluate_query(

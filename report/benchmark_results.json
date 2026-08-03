@@ -63,7 +63,7 @@
     "fixed_size": {
       "chunk_count": 13,
       "avg_chunk_length": 415.62,
-      "score": 5,
+      "score": 6,
       "results": [
         {
           "id": 1,
@@ -96,9 +96,9 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] Students who need subject-specific help can also contact a Library Liaison.",
-            "agent_correct": false,
-            "points": 1
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes. [2] Research Consultations provide personalized guidance from a library specialist either online or in person.",
+            "agent_correct": true,
+            "points": 2
           },
           "unfiltered_ab": {
             "metadata_filter": null,
@@ -131,9 +131,9 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] Students who need subject-specific help can also contact a Library Liaison.",
-            "agent_correct": false,
-            "points": 1
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes. [2] support assignments that require students to engage with the collections. [2] Faculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. [3] Research Consultations provide personalized guidance from a library specialist either online or in person.",
+            "agent_correct": true,
+            "points": 2
           }
         },
         {
@@ -178,7 +178,7 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[2] A user may borrow no more than three books at once and may place up to five books on hold. [1] A user may borrow no more than three books at onc [1] A Libby loan lasts 14 days. [1] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection.",
+            "agent_answer": "[1] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection. [1] Access is available to current Harvard students, faculty and staff. [1] Install the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. [1] Desktop users can instead visit `libbyapp.com/library/harvardu`. [1] A Libby loan lasts 14 days. [1] A user may borrow no more than three books at onc [2] A user may borrow no more than three books at once and may place up to five books on hold. [2] Users can search for a title with the magnifying-glass icon or browse with the building icon.",
             "agent_correct": true,
             "points": 1
           }
@@ -220,7 +220,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [3] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [1] Regular loans can be recalled at the",
+            "agent_answer": "[1] ding headphones, laptop chargers, tripods, SD cards, 360-degree cameras and virtual-reality equipment. [1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] Regular loans can be recalled at the Library's discretion, with notice sent by email. [2] There is no standard overdue fine. [2] Recalled material costs $3 per day, up to $45 per item. [2] Reserve materials and other short-term loans cost $3 per hour when late. [3] BorrowDirect lets Harvard students, faculty and staff request items from partner libraries for free delivery to Harvard when the item is unavailable through HOLLIS.",
             "agent_correct": true,
             "points": 2
           }
@@ -267,7 +267,7 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[2] Faculty can arrange it by contacting their library liaison or submitting a request. [2] Librarians can create an instruction session for a particular class or topic. [2] # Teach with the Library [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+            "agent_answer": "[1] support assignments that require students to engage with the collections. [1] Faculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session. [2] Harvard Library provides course support to help students navigate the Library and find the materials they need. [2] Librarians can create an instruction session for a particular class or topic. [2] A session can take place in a library space, in the class's usual room, or remotely. [2] Faculty can arrange it by contacting their library liaison or submitting a request. [3] course's skill level and discipline.",
             "agent_correct": true,
             "points": 1
           },
@@ -304,8 +304,8 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[2] Faculty can arrange it by contacting their library liaison or submitting a request. [2] Librarians can create an instruction session for a particular class or topic. [3] Students who need subject-specific help can also contact a Library Liaison. [3] # Librarians for First-Year Students",
-            "agent_correct": false,
+            "agent_answer": "[1] support assignments that require students to engage with the collections. [1] Faculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session. [2] Harvard Library provides course support to help students navigate the Library and find the materials they need. [2] Librarians can create an instruction session for a particular class or topic. [2] A session can take place in a library space, in the class's usual room, or remotely. [2] Faculty can arrange it by contacting their library liaison or submitting a request. [3] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library.",
+            "agent_correct": true,
             "points": 1
           }
         },
@@ -347,7 +347,7 @@
               }
             ],
             "evidence_rank": null,
-            "agent_answer": "[2] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] ## Loan periods, renewals and returns [1] Regular loans can be recalled at the",
+            "agent_answer": "[1] ding headphones, laptop chargers, tripods, SD cards, 360-degree cameras and virtual-reality equipment. [1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] BorrowDirect lets Harvard students, faculty and staff request items from partner libraries for free delivery to Harvard when the item is unavailable through HOLLIS. [2] Available material normally arrives within four business days and must be collected in person. [2] The borrower is notified by email. [2] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [3] Regular loans can be recalled at the Library's discretion, with notice sent by email.",
             "agent_correct": false,
             "points": 0
           }
@@ -390,7 +390,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [2] Students who need subject-specific help can also contact a Library Liaison.",
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] ## Support available [1] First-Year Librarians serve as personal library contacts for first-year students. [2] Students who need subject-specific help can also contact a Library Liaison. [2] Research Consultations provide personalized guidance from a library specialist either online or in person.",
             "agent_correct": false,
             "points": 1
           },
@@ -425,7 +425,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [2] Students who need subject-specific help can also contact a Library Liaison.",
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] ## Support available [1] First-Year Librarians serve as personal library contacts for first-year students. [2] Students who need subject-specific help can also contact a Library Liaison. [2] Research Consultations provide personalized guidance from a library specialist either online or in person. [3] Faculty can arrange it by contacting their library liaison or submitting a request. [3] Sessions can be adapted to the course's skill level and discipline.",
             "agent_correct": false,
             "points": 1
           }
@@ -471,7 +471,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] A user may borrow no more than three books at once and may place up to five books on hold. [1] A Libby loan lasts 14 days. [3] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection. [2] Book pickup requests are normally filled in one to four business days.",
+            "agent_answer": "[1] Desktop users can instead visit `libbyapp.com/library/harvardu`. [1] A Libby loan lasts 14 days. [1] A user may borrow no more than three books at once and may place up to five books on hold. [2] Use HOLLIS, the Harvard Library catalog, to find and request books, articles, media, and other materials. [2] Book pickup requests are normally filled in one to four business days. [3] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection. [3] Access is available to current Harvard students, faculty and staff.",
             "agent_correct": true,
             "points": 2
           }
@@ -513,7 +513,7 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[3] A user may borrow no more than three books at once and may place up to five books on hold. [2] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [1] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [3] A Libby loan lasts 14 days.",
+            "agent_answer": "[1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [1] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [2] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] Circulating material may be returned to any Harvard library. [3] Desktop users can instead visit `libbyapp.com/library/harvardu`. [3] A Libby loan lasts 14 days. [3] A user may borrow no more than three books at once and may place up to five books on hold.",
             "agent_correct": true,
             "points": 1
           }
@@ -560,7 +560,7 @@
               }
             ],
             "evidence_rank": 3,
-            "agent_answer": "[1] Faculty can arrange it by contacting their library liaison or submitting a request. [2] Librarians can create an instruction session for a particular class or topic. [2] # Teach with the Library [3] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+            "agent_answer": "[1] Faculty can arrange it by contacting their library liaison or submitting a request. [1] Sessions can be adapted to the course's skill level and discipline. [2] Harvard Library provides course support to help students navigate the Library and find the materials they need. [2] ## General library instruction [2] Librarians can create an instruction session for a particular class or topic. [3] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
             "agent_correct": true,
             "points": 1
           },
@@ -595,7 +595,7 @@
               }
             ],
             "evidence_rank": null,
-            "agent_answer": "[1] Faculty can arrange it by contacting their library liaison or submitting a request. [3] Librarians can create an instruction session for a particular class or topic. [2] # Librarians for First-Year Students [3] # Teach with the Library",
+            "agent_answer": "[1] Faculty can arrange it by contacting their library liaison or submitting a request. [1] Sessions can be adapted to the course's skill level and discipline. [2] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [2] ## Support available [2] First-Year Librarians serve as personal library contacts for first-year students. [3] Harvard Library provides course support to help students navigate the Library and find the materials they need. [3] ## General library instruction [3] Librarians can create an instruction session for a particular class or topic.",
             "agent_correct": false,
             "points": 0
           }
@@ -638,7 +638,7 @@
               }
             ],
             "evidence_rank": null,
-            "agent_answer": "[1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [2] A Libby loan lasts 14 days. [2] A user may borrow no more than three books at once and may place up to five books on hold. [1] BorrowDirect material may be returned to any Harvard library.",
+            "agent_answer": "[1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [1] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [2] Desktop users can instead visit `libbyapp.com/library/harvardu`. [2] A Libby loan lasts 14 days. [3] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [3] Circulating material may be returned to any Harvard library. [3] Regular loans can be recalled at the Library's discretion, with notice sent by email.",
             "agent_correct": false,
             "points": 0
           }
@@ -648,7 +648,7 @@
     "recursive": {
       "chunk_count": 16,
       "avg_chunk_length": 311.31,
-      "score": 6,
+      "score": 7,
       "results": [
         {
           "id": 1,
@@ -681,9 +681,9 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [2] Students who need subject-specific help can also contact a Library Liaison.",
-            "agent_correct": false,
-            "points": 1
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes. [2] Students who need subject-specific help can also contact a Library Liaison. [2] Research Consultations provide personalized guidance from a library specialist either online or in person.",
+            "agent_correct": true,
+            "points": 2
           },
           "unfiltered_ab": {
             "metadata_filter": null,
@@ -716,9 +716,9 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] # Librarians for First-Year Students [1] First-Year Librarians serve as personal library contacts for first-year students. [1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [2] Students who need subject-specific help can also contact a Library Liaison.",
-            "agent_correct": false,
-            "points": 1
+            "agent_answer": "[1] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes. [2] Students who need subject-specific help can also contact a Library Liaison. [2] Research Consultations provide personalized guidance from a library specialist either online or in person. [3] Participating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. [3] They can also support assignments that require students to engage with the collections.",
+            "agent_correct": true,
+            "points": 2
           }
         },
         {
@@ -762,7 +762,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] A user may borrow no more than three books at once and may place up to five books on hold. [1] A Libby loan lasts 14 days. [2] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection. [3] Book pickup requests are normally filled in one to four business days.",
+            "agent_answer": "[1] A Libby loan lasts 14 days. [1] A user may borrow no more than three books at once and may place up to five books on hold. [2] Libby by OverDrive provides popular ebooks and audiobooks from Harvard Library's Farnsworth collection. [2] Access is available to current Harvard students, faculty and staff. [2] Install the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. [2] Desktop users can instead visit `libbyapp.com/library/harvardu`. [3] Use HOLLIS, the Harvard Library catalog, to find and request books, articles, media, and other materials. [3] Book pickup requests are normally filled in one to four business days.",
             "agent_correct": true,
             "points": 2
           }
@@ -804,7 +804,7 @@
               }
             ],
             "evidence_rank": 1,
-            "agent_answer": "[1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [3] A user may borrow no more than three books at once and may place up to five books on hold. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS.",
+            "agent_answer": "[1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] Available material normally arrives within four business days and must be collected in person. [2] The borrower is notified by email. [2] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [3] A Libby loan lasts 14 days. [3] A user may borrow no more than three books at once and may place up to five books on hold.",
             "agent_correct": true,
             "points": 2
           }
@@ -851,7 +851,7 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[2] Faculty can arrange it by contacting their library liaison or submitting a request. [2] Librarians can create an instruction session for a particular class or topic. [2] # Teach with the Library [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+            "agent_answer": "[1] Faculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session. [2] Harvard Library provides course support to help students navigate the Library and find the materials they need. [2] Librarians can create an instruction session for a particular class or topic. [2] A session can take place in a library space, in the class's usual room, or remotely. [2] Faculty can arrange it by contacting their library liaison or submitting a request. [3] Participating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. [3] They can also support assignments that require students to engage with the collections.",
             "agent_correct": true,
             "points": 1
           },
@@ -888,8 +888,8 @@
               }
             ],
             "evidence_rank": 2,
-            "agent_answer": "[2] Faculty can arrange it by contacting their library liaison or submitting a request. [2] Librarians can create an instruction session for a particular class or topic. [3] # Librarians for First-Year Students [2] # Teach with the Library",
-            "agent_correct": false,
+            "agent_answer": "[1] Faculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session. [2] Harvard Library provides course support to help students navigate the Library and find the materials they need. [2] Librarians can create an instruction session for a particular class or topic. [2] A session can take place in a library space, in the class's usual room, or remotely. [2] Faculty can arrange it by contacting their library liaison or submitting a request. [3] Harvard assigns dedicated First-Year Librarians to help first-year students use the Library. [3] First-Year Librarians serve as personal library contacts for first-year students.",
+            "agent_correct": true,
             "points": 1
           }
         },
@@ -931,9 +931,311 @@
               }
             ],
             "evidence_rank": null,
-            "agent_answer": "[1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [2] A Libby loan lasts 14 days. [3] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [2] A user may borrow no more than three books at once and may place up to five books on hold.",
+            "agent_answer": "[1] Available material normally arrives within four business days and must be collected in person. [1] The borrower is notified by email. [1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [2] A Libby loan lasts 14 days. [2] A user may borrow no more than three books at once and may place up to five books on hold. [3] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [3] If no other user requests a regular loan item, its loan period is automatically renewed up to five times.",
             "agent_correct": false,
             "points": 0
+          }
+        }
+      ]
+    },
+    "heading_windows": {
+      "chunk_count": 7,
+      "avg_chunk_length": 615.0,
+      "score": 10,
+      "results": [
+        {
+          "id": 1,
+          "query": "Sinh viên năm nhất nhận được những hình thức hỗ trợ nào từ First-Year Librarians?",
+          "markers": [
+            "guidance, consultations and referrals"
+          ],
+          "primary": {
+            "metadata_filter": {
+              "audience": "student"
+            },
+            "top3": [
+              {
+                "id": "librarians-first-year-students::chunk_0::5",
+                "doc_id": "librarians-first-year-students",
+                "chunk_index": 0,
+                "score": 0.792004,
+                "marker_hits": [
+                  "guidance, consultations and referrals"
+                ],
+                "content": "## Support available\n\nFirst-Year Librarians serve as personal library contacts for first-year students. They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes.\n\nStudents who need subject-specific help can also contact a Library Liaison. Research Consultations provide personalized guidance from a library specialist either online or in person.",
+                "base_score": 0.770391,
+                "sentence_score": 0.813617
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes.",
+            "agent_correct": true,
+            "points": 2
+          },
+          "unfiltered_ab": {
+            "metadata_filter": null,
+            "top3": [
+              {
+                "id": "librarians-first-year-students::chunk_0::5",
+                "doc_id": "librarians-first-year-students",
+                "chunk_index": 0,
+                "score": 0.792004,
+                "marker_hits": [
+                  "guidance, consultations and referrals"
+                ],
+                "content": "## Support available\n\nFirst-Year Librarians serve as personal library contacts for first-year students. They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes.\n\nStudents who need subject-specific help can also contact a Library Liaison. Research Consultations provide personalized guidance from a library specialist either online or in person.",
+                "base_score": 0.770391,
+                "sentence_score": 0.813617
+              },
+              {
+                "id": "teach-with-library::chunk_0::6",
+                "doc_id": "teach-with-library",
+                "chunk_index": 0,
+                "score": 0.551295,
+                "marker_hits": [],
+                "content": "## General library instruction\n\nLibrarians can create an instruction session for a particular class or topic. A session can take place in a library space, in the class's usual room, or remotely. Faculty can arrange it by contacting their library liaison or submitting a request.\n\nSessions can be adapted to the course's skill level and discipline. Topics include primary sources, college-level research, literature reviews, oral history and interviews, evaluating information, database searching, and the interpretation of maps.\n\n## Special collections and archives\n\nParticipating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. They can also support assignments that require students to engage with the collections.\n\nFaculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+                "base_score": 0.508425,
+                "sentence_score": 0.594166
+              },
+              {
+                "id": "borrowdirect::chunk_0::3",
+                "doc_id": "borrowdirect",
+                "chunk_index": 0,
+                "score": 0.398999,
+                "marker_hits": [],
+                "content": "## Delivery and loan rules\n\nAvailable material normally arrives within four business days and must be collected in person. The borrower is notified by email. A BorrowDirect loan lasts 16 weeks and cannot be renewed. Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. BorrowDirect material may be returned to any Harvard library.\n\n## Eligible material\n\nThe service covers printed books and music scores that the owning library is willing to lend. It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles.\n\nHarvard students and faculty may also visit a partner library and check out books using a Harvard ID and BorrowDirect account. Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+                "base_score": 0.227372,
+                "sentence_score": 0.570626
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] First-Year Librarians serve as personal library contacts for first-year students. [1] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes. [2] Librarians can create an instruction session for a particular class or topic. [2] A session can take place in a library space, in the class's usual room, or remotely. [2] Participating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. [2] They can also support assignments that require students to engage with the collections. [3] Available material normally arrives within four business days and must be collected in person. [3] The borrower is notified by email.",
+            "agent_correct": true,
+            "points": 2
+          }
+        },
+        {
+          "id": 2,
+          "query": "Người dùng được mượn tối đa bao nhiêu sách trên Libby cùng lúc, giữ trong bao lâu và đặt trước bao nhiêu sách?",
+          "markers": [
+            "A Libby loan lasts 14 days",
+            "no more than three books at once",
+            "up to five books on hold"
+          ],
+          "primary": {
+            "metadata_filter": null,
+            "top3": [
+              {
+                "id": "libby-harvard::chunk_0::4",
+                "doc_id": "libby-harvard",
+                "chunk_index": 0,
+                "score": 0.64903,
+                "marker_hits": [
+                  "A Libby loan lasts 14 days",
+                  "no more than three books at once",
+                  "up to five books on hold"
+                ],
+                "content": "## Getting started\n\nInstall the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. Desktop users can instead visit `libbyapp.com/library/harvardu`.\n\n## Borrowing limits\n\nA Libby loan lasts 14 days. A user may borrow no more than three books at once and may place up to five books on hold.\n\nUsers can search for a title with the magnifying-glass icon or browse with the building icon. A requested addition to the Farnsworth collection should be submitted as a Purchase Request with **Online** selected as the format and **Farnsworth Room** selected as the library.",
+                "base_score": 0.638844,
+                "sentence_score": 0.659215
+              },
+              {
+                "id": "borrow-renew-return::chunk_0::0",
+                "doc_id": "borrow-renew-return",
+                "chunk_index": 0,
+                "score": 0.442089,
+                "marker_hits": [],
+                "content": "## Request and borrow\n\nUse HOLLIS, the Harvard Library catalog, to find and request books, articles, media, and other materials. Book pickup requests are normally filled in one to four business days. Scan & Deliver can send a scan of a journal article or book chapter by email. Interlibrary Loan can be used when the required material is not available at Harvard.\n\nThe Library also lends equipment including headphones, laptop chargers, tripods, SD cards, 360-degree cameras and virtual-reality equipment.",
+                "base_score": 0.422922,
+                "sentence_score": 0.461256
+              },
+              {
+                "id": "borrowdirect::chunk_0::3",
+                "doc_id": "borrowdirect",
+                "chunk_index": 0,
+                "score": 0.433715,
+                "marker_hits": [],
+                "content": "## Delivery and loan rules\n\nAvailable material normally arrives within four business days and must be collected in person. The borrower is notified by email. A BorrowDirect loan lasts 16 weeks and cannot be renewed. Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. BorrowDirect material may be returned to any Harvard library.\n\n## Eligible material\n\nThe service covers printed books and music scores that the owning library is willing to lend. It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles.\n\nHarvard students and faculty may also visit a partner library and check out books using a Harvard ID and BorrowDirect account. Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+                "base_score": 0.437454,
+                "sentence_score": 0.429975
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] Install the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. [1] Desktop users can instead visit `libbyapp.com/library/harvardu`. [1] A Libby loan lasts 14 days. [1] A user may borrow no more than three books at once and may place up to five books on hold. [2] Use HOLLIS, the Harvard Library catalog, to find and request books, articles, media, and other materials. [2] Book pickup requests are normally filled in one to four business days. [3] Available material normally arrives within four business days and must be collected in person. [3] The borrower is notified by email.",
+            "agent_correct": true,
+            "points": 2
+          }
+        },
+        {
+          "id": 3,
+          "query": "Tài liệu mượn thông thường được tự động gia hạn tối đa bao nhiêu lần, với điều kiện gì?",
+          "markers": [
+            "If no other user requests a regular loan item, its loan period is automatically renewed up to five times"
+          ],
+          "primary": {
+            "metadata_filter": null,
+            "top3": [
+              {
+                "id": "borrow-renew-return::chunk_1::1",
+                "doc_id": "borrow-renew-return",
+                "chunk_index": 1,
+                "score": 0.562857,
+                "marker_hits": [
+                  "If no other user requests a regular loan item, its loan period is automatically renewed up to five times"
+                ],
+                "content": "## Loan periods, renewals and returns\n\nRegular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. If no other user requests a regular loan item, its loan period is automatically renewed up to five times. Circulating material may be returned to any Harvard library. Regular loans can be recalled at the Library's discretion, with notice sent by email.",
+                "base_score": 0.545653,
+                "sentence_score": 0.580061
+              },
+              {
+                "id": "borrowdirect::chunk_0::3",
+                "doc_id": "borrowdirect",
+                "chunk_index": 0,
+                "score": 0.521057,
+                "marker_hits": [],
+                "content": "## Delivery and loan rules\n\nAvailable material normally arrives within four business days and must be collected in person. The borrower is notified by email. A BorrowDirect loan lasts 16 weeks and cannot be renewed. Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. BorrowDirect material may be returned to any Harvard library.\n\n## Eligible material\n\nThe service covers printed books and music scores that the owning library is willing to lend. It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles.\n\nHarvard students and faculty may also visit a partner library and check out books using a Harvard ID and BorrowDirect account. Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+                "base_score": 0.557479,
+                "sentence_score": 0.484635
+              },
+              {
+                "id": "libby-harvard::chunk_0::4",
+                "doc_id": "libby-harvard",
+                "chunk_index": 0,
+                "score": 0.441341,
+                "marker_hits": [],
+                "content": "## Getting started\n\nInstall the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. Desktop users can instead visit `libbyapp.com/library/harvardu`.\n\n## Borrowing limits\n\nA Libby loan lasts 14 days. A user may borrow no more than three books at once and may place up to five books on hold.\n\nUsers can search for a title with the magnifying-glass icon or browse with the building icon. A requested addition to the Farnsworth collection should be submitted as a Purchase Request with **Online** selected as the format and **Farnsworth Room** selected as the library.",
+                "base_score": 0.341241,
+                "sentence_score": 0.541442
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [1] If no other user requests a regular loan item, its loan period is automatically renewed up to five times. [2] Available material normally arrives within four business days and must be collected in person. [2] The borrower is notified by email. [2] Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. [2] The service covers printed books and music scores that the owning library is willing to lend. [2] It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles. [2] Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+            "agent_correct": true,
+            "points": 2
+          }
+        },
+        {
+          "id": 4,
+          "query": "Giảng viên phải làm gì để đặt một buổi hướng dẫn thư viện cho lớp và nên gửi yêu cầu khi nào?",
+          "markers": [
+            "contacting their library liaison or submitting a request",
+            "Requests should be submitted as early as possible"
+          ],
+          "primary": {
+            "metadata_filter": {
+              "audience": "faculty"
+            },
+            "top3": [
+              {
+                "id": "teach-with-library::chunk_0::6",
+                "doc_id": "teach-with-library",
+                "chunk_index": 0,
+                "score": 0.751177,
+                "marker_hits": [
+                  "contacting their library liaison or submitting a request",
+                  "Requests should be submitted as early as possible"
+                ],
+                "content": "## General library instruction\n\nLibrarians can create an instruction session for a particular class or topic. A session can take place in a library space, in the class's usual room, or remotely. Faculty can arrange it by contacting their library liaison or submitting a request.\n\nSessions can be adapted to the course's skill level and discipline. Topics include primary sources, college-level research, literature reviews, oral history and interviews, evaluating information, database searching, and the interpretation of maps.\n\n## Special collections and archives\n\nParticipating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. They can also support assignments that require students to engage with the collections.\n\nFaculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+                "base_score": 0.718678,
+                "sentence_score": 0.783677
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] Librarians can create an instruction session for a particular class or topic. [1] A session can take place in a library space, in the class's usual room, or remotely. [1] Faculty can arrange it by contacting their library liaison or submitting a request. [1] Participating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. [1] They can also support assignments that require students to engage with the collections. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+            "agent_correct": true,
+            "points": 2
+          },
+          "unfiltered_ab": {
+            "metadata_filter": null,
+            "top3": [
+              {
+                "id": "teach-with-library::chunk_0::6",
+                "doc_id": "teach-with-library",
+                "chunk_index": 0,
+                "score": 0.751177,
+                "marker_hits": [
+                  "contacting their library liaison or submitting a request",
+                  "Requests should be submitted as early as possible"
+                ],
+                "content": "## General library instruction\n\nLibrarians can create an instruction session for a particular class or topic. A session can take place in a library space, in the class's usual room, or remotely. Faculty can arrange it by contacting their library liaison or submitting a request.\n\nSessions can be adapted to the course's skill level and discipline. Topics include primary sources, college-level research, literature reviews, oral history and interviews, evaluating information, database searching, and the interpretation of maps.\n\n## Special collections and archives\n\nParticipating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. They can also support assignments that require students to engage with the collections.\n\nFaculty may request one class visit or several visits for deeper study of archives, manuscripts, maps and rare books. Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session.",
+                "base_score": 0.718678,
+                "sentence_score": 0.783677
+              },
+              {
+                "id": "librarians-first-year-students::chunk_0::5",
+                "doc_id": "librarians-first-year-students",
+                "chunk_index": 0,
+                "score": 0.673098,
+                "marker_hits": [],
+                "content": "## Support available\n\nFirst-Year Librarians serve as personal library contacts for first-year students. They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes.\n\nStudents who need subject-specific help can also contact a Library Liaison. Research Consultations provide personalized guidance from a library specialist either online or in person.",
+                "base_score": 0.665919,
+                "sentence_score": 0.680277
+              },
+              {
+                "id": "borrowdirect::chunk_0::3",
+                "doc_id": "borrowdirect",
+                "chunk_index": 0,
+                "score": 0.47632,
+                "marker_hits": [],
+                "content": "## Delivery and loan rules\n\nAvailable material normally arrives within four business days and must be collected in person. The borrower is notified by email. A BorrowDirect loan lasts 16 weeks and cannot be renewed. Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. BorrowDirect material may be returned to any Harvard library.\n\n## Eligible material\n\nThe service covers printed books and music scores that the owning library is willing to lend. It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles.\n\nHarvard students and faculty may also visit a partner library and check out books using a Harvard ID and BorrowDirect account. Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+                "base_score": 0.416881,
+                "sentence_score": 0.535759
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] Librarians can create an instruction session for a particular class or topic. [1] A session can take place in a library space, in the class's usual room, or remotely. [1] Faculty can arrange it by contacting their library liaison or submitting a request. [1] Participating special-collections libraries and archives offer class visits ranging from a survey of material selected by faculty to a guided exploration designed by library staff. [1] They can also support assignments that require students to engage with the collections. [1] Requests should be submitted as early as possible so staff and space are available; a librarian or archivist will then help plan the session. [2] First-Year Librarians serve as personal library contacts for first-year students. [2] They provide guidance, consultations and referrals while students begin exploring research interests and writing research papers for their classes.",
+            "agent_correct": true,
+            "points": 2
+          }
+        },
+        {
+          "id": 5,
+          "query": "BorrowDirect cho mượn loại tài liệu nào, trong bao lâu và có được gia hạn không?",
+          "markers": [
+            "printed books and music scores",
+            "loan lasts 16 weeks and cannot be renewed"
+          ],
+          "primary": {
+            "metadata_filter": null,
+            "top3": [
+              {
+                "id": "borrowdirect::chunk_0::3",
+                "doc_id": "borrowdirect",
+                "chunk_index": 0,
+                "score": 0.655279,
+                "marker_hits": [
+                  "printed books and music scores",
+                  "loan lasts 16 weeks and cannot be renewed"
+                ],
+                "content": "## Delivery and loan rules\n\nAvailable material normally arrives within four business days and must be collected in person. The borrower is notified by email. A BorrowDirect loan lasts 16 weeks and cannot be renewed. Pending requests appear in the BorrowDirect account, while checked-out items appear in HOLLIS. BorrowDirect material may be returned to any Harvard library.\n\n## Eligible material\n\nThe service covers printed books and music scores that the owning library is willing to lend. It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles.\n\nHarvard students and faculty may also visit a partner library and check out books using a Harvard ID and BorrowDirect account. Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library.",
+                "base_score": 0.701857,
+                "sentence_score": 0.608701
+              },
+              {
+                "id": "borrow-renew-return::chunk_1::1",
+                "doc_id": "borrow-renew-return",
+                "chunk_index": 1,
+                "score": 0.608756,
+                "marker_hits": [],
+                "content": "## Loan periods, renewals and returns\n\nRegular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. If no other user requests a regular loan item, its loan period is automatically renewed up to five times. Circulating material may be returned to any Harvard library. Regular loans can be recalled at the Library's discretion, with notice sent by email.",
+                "base_score": 0.620073,
+                "sentence_score": 0.59744
+              },
+              {
+                "id": "libby-harvard::chunk_0::4",
+                "doc_id": "libby-harvard",
+                "chunk_index": 0,
+                "score": 0.546933,
+                "marker_hits": [],
+                "content": "## Getting started\n\nInstall the Libby app, open its menu, choose **Add Library**, search for Harvard University, and sign in with HarvardKey. Desktop users can instead visit `libbyapp.com/library/harvardu`.\n\n## Borrowing limits\n\nA Libby loan lasts 14 days. A user may borrow no more than three books at once and may place up to five books on hold.\n\nUsers can search for a title with the magnifying-glass icon or browse with the building icon. A requested addition to the Farnsworth collection should be submitted as a Purchase Request with **Online** selected as the format and **Farnsworth Room** selected as the library.",
+                "base_score": 0.485354,
+                "sentence_score": 0.608512
+              }
+            ],
+            "evidence_rank": 1,
+            "agent_answer": "[1] Available material normally arrives within four business days and must be collected in person. [1] The borrower is notified by email. [1] A BorrowDirect loan lasts 16 weeks and cannot be renewed. [1] The service covers printed books and music scores that the owning library is willing to lend. [1] It does not supply books already available through Harvard Library; books designated by the owner as reference, reserve or rare; bound journals; or journal articles. [1] Material borrowed in person from a partner must be returned to that owning library rather than to Harvard Library. [2] Regular materials are generally lent for a semester, although the item record in HOLLIS gives the specific loan period and technology loans are shorter. [2] If no other user requests a regular loan item, its loan period is automatically renewed up to five times.",
+            "agent_correct": true,
+            "points": 2
           }
         }
       ]

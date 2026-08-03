@@ -13,7 +13,12 @@ import streamlit as st
 
 from ingest import build_knowledge_base, load_documents
 from src.agent import KnowledgeBaseAgent
-from src.chunking import FixedSizeChunker, RecursiveChunker, SentenceChunker, _dot
+from src.chunking import (
+    FixedSizeChunker,
+    RecursiveChunker,
+    SentenceChunker,
+    _dot,
+)
 from src.embeddings import LOCAL_EMBEDDING_MODEL, LocalEmbedder, _mock_embed
 
 
