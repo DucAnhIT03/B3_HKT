@@ -150,15 +150,77 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 
 Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
 
-| # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
-|---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+**Cấu hình đo:** `HeadingAwareChunker(max_chunk_size=400)`, local embedding `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, corpus `data/rmit-library` gồm 188 chunks, `top_k=3`. Query 4 dùng `metadata_filter={"audience": "student"}`.
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+| # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Cosine score | Có liên quan không? | Câu trả lời của Agent (tóm tắt) | Điểm rubric (/2) |
+|---|-------|--------------------------------|-------|-----------|------------------------|------------------|
+| 1 | How many items can undergraduate and postgraduate students borrow, for how long, and how many renewals are allowed? | `rmit-borrowing-returning::chunk_4`: đúng mục undergraduate/postgraduate, chứa 25 items, 30 days và 1 renewal. | 0.7049 | Có — full evidence ở top-1. | Đúng: 25 tài liệu, 30 ngày và 1 lần gia hạn; câu trả lời có thêm điều kiện gia hạn. | **2** |
+| 2 | Under what conditions can a borrowed item be renewed, and how long does the renewal last? | `rmit-borrowing-returning::chunk_8`: mục Alumni nhưng chứa đủ điều kiện không overdue/không reserved và thời gian gia hạn 15 ngày, tối đa 45 ngày. | 0.7241 | Có — full evidence ở top-1. | Đúng điều kiện và thời gian; có thêm quota của alumni nhưng không làm sai đáp án. | **2** |
+| 3 | What steps are required to book a Library study room? | `rmit-study-room-booking::chunk_0`: chỉ giới thiệu công dụng của study room, không chứa các bước đặt phòng. | 0.7926 | Không ở top-1; full evidence chỉ đứng top-3. | Thiếu: agent chỉ trả phần giới thiệu, không nêu đăng nhập, chọn campus/phòng/thời gian và xác nhận. | **1** |
+| 4 | What support does the Library provide to make resources accessible? | `rmit-accessibility-resources::chunk_0`: chứa đủ text digitisation, hỗ trợ lấy digital resources và chuyển PDF thành text. | 0.6203 | Có — full evidence ở top-1 sau khi lọc `audience=student`. | Đúng và được grounded đầy đủ trong chunk top-1. | **2** |
+| 5 | Which reasons will the Library not accept when a user disputes a fine? | `rmit-borrowing-returning::chunk_17`: chỉ hướng dẫn trao đổi với service desk, không chứa danh sách lý do bị từ chối. | 0.7373 | Không ở top-1; top-2 chỉ có partial evidence và top-3 thiếu `Changed opening hours`. | Sai/thiếu: agent nói thư viện sẽ xem xét khiếu nại nhưng không liệt kê các lý do không được chấp nhận. | **1** |
+
+**Tổng điểm benchmark cá nhân:** **8/10**.
+
+### Bằng chứng top-3 ở mức chunk
+
+| Query | Hạng | Chunk | Score | Đánh giá evidence | Ghi chú |
+|-------|------|-------|-------|-------------------|---------|
+| 1 | 1 | `rmit-borrowing-returning::chunk_4` | 0.7049 | Full | Đúng đối tượng undergraduate/postgraduate và đủ 4/4 evidence. |
+| 1 | 2 | `rmit-borrowing-returning::chunk_1` | 0.7048 | None | Chỉ có heading chung về borrowing. |
+| 1 | 3 | `rmit-borrowing-returning::chunk_6` | 0.6806 | Partial | Cùng số liệu nhưng dành cho academic staff, nên không phải gold chunk. |
+| 2 | 1 | `rmit-borrowing-returning::chunk_8` | 0.7241 | Full | Đủ điều kiện và thời gian gia hạn. |
+| 2 | 2 | `rmit-borrowing-returning::chunk_4` | 0.6850 | Full | Đủ điều kiện và thời gian gia hạn. |
+| 2 | 3 | `rmit-borrowing-returning::chunk_7` | 0.6561 | Full | Đủ điều kiện và thời gian gia hạn. |
+| 3 | 1 | `rmit-study-room-booking::chunk_0` | 0.7926 | None | Đúng chủ đề nhưng chỉ là giới thiệu. |
+| 3 | 2 | `rmit-study-room-booking::chunk_4` | 0.7039 | None | Booking policy, không chứa quy trình đặt phòng. |
+| 3 | 3 | `rmit-study-room-booking::chunk_2` | 0.7023 | Full | Chứa đủ đăng nhập, chọn campus/phòng/thời gian và xác nhận. |
+| 4 | 1 | `rmit-accessibility-resources::chunk_0` | 0.6203 | Full | Đủ 3/3 evidence sau filter. |
+| 4 | 2 | `rmit-study-faq::chunk_15` | 0.5865 | None | Nói về academic resources, không phải accessibility support. |
+| 4 | 3 | `rmit-accessibility-resources::chunk_2` | 0.5315 | None | Nói chung về ELA nhưng không liệt kê ba hỗ trợ cần trả lời. |
+| 5 | 1 | `rmit-borrowing-returning::chunk_17` | 0.7373 | None | Cùng chủ đề dispute/fine nhưng không chứa danh sách bị từ chối. |
+| 5 | 2 | `rmit-borrowing-returning::chunk_18` | 0.6345 | Partial | Có hai evidence đầu nhưng phần cuối danh sách nằm ngoài top-3. |
+| 5 | 3 | `rmit-library-rules::chunk_3` | 0.5794 | None | Quy tắc thư viện chung, không phải fine dispute. |
+
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** **5/5** có ít nhất một chunk liên quan; trong đó **4/5** có chunk chứa full evidence, còn query 5 chỉ có partial evidence.
+
+### Phân tích A/B metadata filter — Query 4
+
+Hai lượt dùng cùng query, corpus, embedder, strategy và `top_k=3`; biến duy nhất được thay đổi là có hoặc không có `metadata_filter={"audience": "student"}`.
+
+| Lượt đo | Top-3 | Evidence coverage | Nhận xét |
+|---------|-------|-------------------|----------|
+| A — Không filter | `rmit-library-resources::chunk_4` (0.7168, `audience=all`); `rmit-library-resources::chunk_0` (0.7092, `audience=all`); `rmit-library-resources::chunk_10` (0.6826, `audience=all`) | **0/3** | Cả ba chunk giống chủ đề “library resources/support” nhưng không chứa ba hỗ trợ accessibility trong gold answer. |
+| B — Có filter `audience=student` | `rmit-accessibility-resources::chunk_0` (0.6203); `rmit-study-faq::chunk_15` (0.5865); `rmit-accessibility-resources::chunk_2` (0.5315) | **3/3** | Gold chunk lên top-1 và agent trả lời đủ ba hỗ trợ. |
+
+Filter đã thay đổi toàn bộ top-3 và cải thiện precision rõ rệt: từ không có evidence lên full evidence ở top-1. Điểm 0.6203 của gold chunk thấp hơn 0.7168 của chunk nhiễu khi không filter, cho thấy cosine score chỉ là tín hiệu xếp hạng trong tập ứng viên chứ không phải bằng chứng nội dung đúng. Filter loại các tài liệu `audience=all` và `faculty`, làm giảm recall theo thiết kế, nhưng trong query này không loại nhầm đáp án vì gold answer dành riêng cho `student`.
+
+### Failure analysis — Query 5
+
+**Query:** “Which reasons will the Library not accept when a user disputes a fine?”
+
+**Bằng chứng từ top-3:**
+
+- Top-1 `rmit-borrowing-returning::chunk_17`, score 0.7373: đúng chủ đề fine dispute nhưng chỉ hướng dẫn nói chuyện với service desk; không chứa lý do nào trong gold answer.
+- Top-2 `rmit-borrowing-returning::chunk_18`, score 0.6345: chứa partial evidence gồm “Lack of knowledge of library polices” và “Forgetting the due date”, nhưng chưa có phần cuối danh sách.
+- Top-3 `rmit-library-rules::chunk_3`, score 0.5794: quy tắc thư viện chung, không chứa evidence về tranh chấp tiền phạt.
+- `rmit-borrowing-returning::chunk_19`, nằm ngoài top-3, mới chứa các lý do còn lại gồm “Not being on campus”, “Semester breaks, summer vacation” và “Changed opening hours”.
+
+**Kết quả:** context top-3 chỉ đạt evidence coverage 2/3 theo các chuỗi đặc trưng. Agent extractive dùng top-1 nên trả lời rằng thư viện sẽ xem xét khiếu nại, thay vì liệt kê các lý do không được chấp nhận; vì vậy query này chỉ đạt **1/2 điểm**.
+
+**Nguyên nhân:** `HeadingAwareChunker` giữ đúng heading nhưng section danh sách dài hơn 400 ký tự bị recursive fallback chia thành `chunk_18` và `chunk_19` mà không có overlap. Đồng thời, chunk giới thiệu `chunk_17` chứa trực tiếp các từ “disagree”, “library fine” nên có cosine score cao hơn chunk chứa câu trả lời. Đây là trường hợp đúng `doc_id` và đúng chủ đề nhưng sai section; score cao không đồng nghĩa với mật độ thông tin trả lời cao.
+
+**Cải thiện đề xuất:** giữ một overlap nhỏ giữa các chunk con của cùng section hoặc cho phép giữ trọn section dạng danh sách; thử reranker ưu tiên chunk chứa cấu trúc liệt kê/chuỗi evidence; và để agent tổng hợp nhiều chunk liên quan thay vì chỉ trích top-1. Nếu tăng `top_k`, cần kiểm tra precision thay vì mặc định rằng nhiều context luôn tốt hơn.
+
+### Nhận xét theo tiêu chí CP6
+
+| Tiêu chí | Nhận xét từ kết quả cá nhân |
+|----------|-----------------------------|
+| Precision | Query 1, 2 và 4 có full evidence ở top-1; query 3 đúng ở top-3; query 5 chỉ có partial evidence ở top-2. |
+| Chunk coherence | Heading giúp giữ tên section, nhưng recursive fallback không overlap làm danh sách ngoại lệ của query 5 bị tách đôi. |
+| Metadata utility | Filter `audience=student` đổi evidence coverage query 4 từ 0/3 thành 3/3 và đưa gold chunk lên top-1. |
+| Grounding | Agent đúng khi top-1 chứa full evidence (query 1, 2, 4), nhưng sai/thiếu khi top-1 chỉ cùng chủ đề (query 3, 5). |
+| Failure case | Query 5 cho thấy cùng `doc_id` không đủ để kết luận retrieval đúng; phải kiểm nội dung chunk và evidence thực tế. |
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
 > *Viết 2-3 câu:*

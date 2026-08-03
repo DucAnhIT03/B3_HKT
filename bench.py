@@ -23,6 +23,12 @@ BENCHMARKS: list[dict[str, Any]] = [
             "How many items can undergraduate and postgraduate students borrow, "
             "for how long, and how many renewals are allowed?"
         ),
+        "evidence": [
+            "Undergraduate and postgraduate students",
+            "Loan quota - 25 items",
+            "Loan period - 30 days",
+            "Renewals - 1",
+        ],
         "metadata_filter": None,
     },
     {
@@ -31,21 +37,41 @@ BENCHMARKS: list[dict[str, Any]] = [
             "Under what conditions can a borrowed item be renewed, and how long "
             "does the renewal last?"
         ),
+        "evidence": [
+            "not overdue",
+            "reservation by another user",
+            "Renewals last 15 days",
+        ],
         "metadata_filter": None,
     },
     {
         "kind": "process",
         "query": "What steps are required to book a Library study room?",
+        "evidence": [
+            "log in with your RMIT account",
+            "choose your campus",
+            "confirm your booking",
+        ],
         "metadata_filter": None,
     },
     {
         "kind": "list + metadata filter",
         "query": "What support does the Library provide to make resources accessible?",
+        "evidence": [
+            "Text digitisation",
+            "Helping to obtain digital resources",
+            "Converting documents from PDF to text",
+        ],
         "metadata_filter": {"audience": "student"},
     },
     {
         "kind": "exception",
         "query": "Which reasons will the Library not accept when a user disputes a fine?",
+        "evidence": [
+            "Lack of knowledge of library polices",
+            "Forgetting the due date",
+            "Changed opening hours",
+        ],
         "metadata_filter": None,
     },
 ]
@@ -98,10 +124,20 @@ def _preview(content: str, limit: int = 180) -> str:
     return compact[: limit - 3].rstrip() + "..."
 
 
+def _matching_evidence(content: str, evidence: list[str]) -> list[str]:
+    """Return the expected evidence phrases actually present in one chunk."""
+    normalized_content = content.casefold()
+    return [
+        phrase
+        for phrase in evidence
+        if phrase.casefold() in normalized_content
+    ]
+
+
 def run_benchmark() -> int:
     _configure_console_encoding()
 
-    print("=== CHECKPOINT 5 BENCHMARK ===")
+    print("=== CHECKPOINT 6 BENCHMARK ANALYSIS ===")
     print(f"Corpus: {DATA_DIR}")
     print(f"Strategy: {STRATEGY_NAME}")
     print(f"Embedding model: {LOCAL_EMBEDDING_MODEL}")
@@ -115,11 +151,13 @@ def run_benchmark() -> int:
 
     for index, benchmark in enumerate(BENCHMARKS, start=1):
         query = benchmark["query"]
+        evidence = benchmark["evidence"]
         metadata_filter = benchmark["metadata_filter"]
 
         print(f"\n--- Query {index}: {benchmark['kind']} ---")
         print(f"Question: {query}")
         print(f"Metadata filter: {metadata_filter or 'none'}")
+        print(f"Required evidence: {evidence}")
 
         if metadata_filter:
             results = store.search_with_filter(
@@ -133,17 +171,91 @@ def run_benchmark() -> int:
             agent_store = store
 
         print("Top 3:")
+        retrieved_evidence: set[str] = set()
         for rank, result in enumerate(results, start=1):
             metadata = result["metadata"]
+            matches = _matching_evidence(result["content"], evidence)
+            retrieved_evidence.update(matches)
+            if len(matches) == len(evidence):
+                relevance = "FULL EVIDENCE"
+            elif matches:
+                relevance = "PARTIAL EVIDENCE"
+            else:
+                relevance = "NO EVIDENCE"
             print(
                 f"  {rank}. score={result['score']:.4f} "
                 f"doc_id={metadata.get('doc_id', 'unknown')} "
-                f"chunk_index={metadata.get('chunk_index', 'unknown')}"
+                f"chunk_index={metadata.get('chunk_index', 'unknown')} "
+                f"relevance={relevance}"
             )
+            print(f"     evidence_hits={matches or 'none'}")
             print(f"     preview={_preview(result['content'])}")
 
+        missing_evidence = [
+            phrase for phrase in evidence if phrase not in retrieved_evidence
+        ]
+        print(
+            f"Evidence coverage in top-3: "
+            f"{len(retrieved_evidence)}/{len(evidence)}"
+        )
+        print(f"Missing evidence: {missing_evidence or 'none'}")
+
         agent = KnowledgeBaseAgent(store=agent_store, llm_fn=_extractive_llm)
-        print(f"Agent answer (extractive CP5): {agent.answer(query, top_k=TOP_K)}")
+        print(f"Agent answer (extractive): {agent.answer(query, top_k=TOP_K)}")
+
+        if metadata_filter:
+            print("\nA/B FILTER COMPARISON")
+            print("A = without metadata filter")
+            unfiltered_results = store.search(query, top_k=TOP_K)
+            unfiltered_evidence: set[str] = set()
+
+            for rank, result in enumerate(unfiltered_results, start=1):
+                metadata = result["metadata"]
+                matches = _matching_evidence(result["content"], evidence)
+                unfiltered_evidence.update(matches)
+                if len(matches) == len(evidence):
+                    relevance = "FULL EVIDENCE"
+                elif matches:
+                    relevance = "PARTIAL EVIDENCE"
+                else:
+                    relevance = "NO EVIDENCE"
+                print(
+                    f"  {rank}. score={result['score']:.4f} "
+                    f"doc_id={metadata.get('doc_id', 'unknown')} "
+                    f"chunk_index={metadata.get('chunk_index', 'unknown')} "
+                    f"audience={metadata.get('audience', 'unknown')} "
+                    f"relevance={relevance}"
+                )
+                print(f"     evidence_hits={matches or 'none'}")
+                print(f"     preview={_preview(result['content'])}")
+
+            filtered_ranking = [
+                (
+                    result["metadata"].get("doc_id"),
+                    result["metadata"].get("chunk_index"),
+                )
+                for result in results
+            ]
+            unfiltered_ranking = [
+                (
+                    result["metadata"].get("doc_id"),
+                    result["metadata"].get("chunk_index"),
+                )
+                for result in unfiltered_results
+            ]
+            print("B = with metadata filter")
+            print(f"  filter={metadata_filter}")
+            print(f"  ranking={filtered_ranking}")
+            print(
+                f"  evidence_coverage="
+                f"{len(retrieved_evidence)}/{len(evidence)}"
+            )
+            print(f"A ranking={unfiltered_ranking}")
+            print(
+                f"A evidence_coverage="
+                f"{len(unfiltered_evidence)}/{len(evidence)}"
+            )
+            print(f"Top-3 changed by filter: {unfiltered_ranking != filtered_ranking}")
 
     return 0
 
