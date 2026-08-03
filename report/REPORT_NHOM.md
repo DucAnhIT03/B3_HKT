@@ -52,9 +52,15 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 | Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
 |-----------|----------|-------------|------------|-------------------|
-| | FixedSizeChunker (`fixed_size`) | | | |
-| | SentenceChunker (`by_sentences`) | | | |
-| | RecursiveChunker (`recursive`) | | | |
+| `rmit-borrowing-returning` | FixedSizeChunker (`fixed_size`, 400) | 9 | 394.78 | Thấp — có thể cắt giữa bảng quota, danh sách hoặc một mục quy định. |
+| `rmit-borrowing-returning` | SentenceChunker (`by_sentences`, 3 câu) | 8 | 441.38 | Trung bình — giữ câu trọn vẹn nhưng các dòng bullet ít dấu kết câu có thể bị gộp thành chunk dài. |
+| `rmit-borrowing-returning` | RecursiveChunker (`recursive`, 400) | 10 | 353.50 | Khá — ưu tiên ranh giới đoạn và dòng nên giữ các nhóm quy định tốt hơn fixed-size. |
+| `rmit-study-faq` | FixedSizeChunker (`fixed_size`, 400) | 61 | 395.72 | Thấp — cắt theo ký tự nên dễ tách câu hỏi khỏi phần trả lời tương ứng. |
+| `rmit-study-faq` | SentenceChunker (`by_sentences`, 3 câu) | 90 | 265.11 | Trung bình — câu được giữ nguyên nhưng heading có thể bị tách khỏi câu trả lời. |
+| `rmit-study-faq` | RecursiveChunker (`recursive`, 400) | 73 | 328.70 | Khá — giữ cấu trúc đoạn tốt hơn, nhưng chunk con vẫn có thể mất heading của mục FAQ. |
+| `rmit-study-room-booking` | FixedSizeChunker (`fixed_size`, 400) | 4 | 338.50 | Trung bình — số chunk ít nhưng có nguy cơ cắt giữa các bước đặt phòng hoặc booking policy. |
+| `rmit-study-room-booking` | SentenceChunker (`by_sentences`, 3 câu) | 2 | 675.00 | Thấp — chunk quá lớn vì nội dung dạng bullet không được nhận diện tốt như câu hoàn chỉnh. |
+| `rmit-study-room-booking` | RecursiveChunker (`recursive`, 400) | 4 | 337.00 | Khá — giữ các đoạn và dòng chính sách gần nhau, phù hợp hơn hai baseline còn lại. |
 
 ### Chiến lược của từng thành viên
 
@@ -97,13 +103,15 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 
 > **Đúng 5 câu hỏi**, đa dạng, có thể kiểm chứng; **ít nhất 1 câu** cần lọc metadata mới trả lời tốt. Đây là bộ câu hỏi chung cho mọi thành viên chạy.
 
+> **Bộ query đã chốt:** mọi thành viên phải giữ nguyên câu chữ, gold answer, corpus và embedder khi chạy benchmark. Query số 4 bắt buộc dùng `metadata_filter={"audience": "student"}`.
+
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
+| 1 — Số liệu | How many items can undergraduate and postgraduate students borrow, for how long, and how many renewals are allowed? | Undergraduate and postgraduate students can borrow **25 items** for **30 days**, with **1 renewal**. | `rmit-borrowing-returning` → `Borrowing for students, staff and alumni` → `Student` → `Undergraduate and postgraduate students` |
+| 2 — Điều kiện | Under what conditions can a borrowed item be renewed, and how long does the renewal last? | An item can be renewed only when it is **not overdue** and **has not been reserved by another user**. A renewal lasts **15 days**, with a maximum loan period of **45 days**. | `rmit-borrowing-returning` → `Borrowing for students, staff and alumni` → phần điều kiện gia hạn |
+| 3 — Quy trình | What steps are required to book a Library study room? | Log in with an **RMIT account**, choose the **campus**, select a **room and time**, then **confirm the booking**. | `rmit-study-room-booking` → `How to book a room` |
+| 4 — Liệt kê + lọc metadata | What support does the Library provide to make resources accessible? **Filter:** `{"audience": "student"}` | The Library provides **text digitisation**, **help obtaining digital resources**, and **conversion of PDF documents to text**. | `rmit-accessibility-resources` → `Resources for students with a disability` |
+| 5 — Ngoại lệ | Which reasons will the Library not accept when a user disputes a fine? | The Library does not accept: lack of knowledge of library policies; unwillingness to take responsibility for material loaned to a third party; forgetting the due date; not receiving reminders; a full email inbox; inability to visit often or distance from the library; disagreement with the fine policy; not being on campus; semester breaks or summer vacation; or changed opening hours. | `rmit-borrowing-returning` → `Disputes` → `We will not accept the following reasons` |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
